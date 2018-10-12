@@ -12,7 +12,7 @@ commands:
       - run:
           name: "Install `circleci` CLI"
           command: |
-            wget -O - https://gist.github.com/matfax/d2de773b528830adafeb54a4829a8210/raw/49420337eec47ad3ab44bb96fa9367e741968958/install.sh | bash
+            wget -O - https://gist.github.com/matfax/d2de773b528830adafeb54a4829a8210/raw/49420337eec47ad3ab44bb96fa9367e741968958/install.sh | sh
       - envorb/install
 
   env-publish:
