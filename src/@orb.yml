@@ -45,8 +45,7 @@ commands:
             source /usr/local/bin/envload
             export REPOSITORY_ORGANIZATION=$(git remote -v | grep "(fetch)" | sed 's/.*\/\([^ ]*\)\/.*/\1/')
             export REPOSITORY_NAME=$(basename -s .git `git config --get remote.origin.url`)
-            circleci orb publish << parameters.orb-path >> << parameters.orb-ref >>
-            <<# parameters.token-variable >>--token << parameters.token-variable >> <</ parameters.token-variable >>
+            circleci orb publish << parameters.orb-path >> << parameters.orb-ref >> <<# parameters.token-variable >>--token << parameters.token-variable >> <</ parameters.token-variable >>
 
   pack:
     description: >
