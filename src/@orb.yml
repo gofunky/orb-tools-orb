@@ -12,7 +12,9 @@ commands:
       - run:
           name: "Install `circleci` CLI"
           command: |
-            sh <(wget -O - https://gist.github.com/matfax/d2de773b528830adafeb54a4829a8210/raw/49420337eec47ad3ab44bb96fa9367e741968958/install.sh)
+            wget -O https://gist.github.com/matfax/d2de773b528830adafeb54a4829a8210/raw/49420337eec47ad3ab44bb96fa9367e741968958/install.sh install.sh
+            chmod +x install.sh
+            ./install.sh
       - envorb/install
 
   env-publish:
@@ -386,8 +388,8 @@ jobs:
       name: envorb/default
       alpine_version: "3.8"
     steps:
-      - install
       - checkout
+      - install
       - pack:
           source: << parameters.source-dir >>
           destination: << parameters.destination-file >>
@@ -471,11 +473,11 @@ jobs:
       name: envorb/default
       alpine_version: "3.8"
     steps:
-      - install
       - when:
           condition: << parameters.checkout >>
           steps:
             - checkout
+      - install
       - attach_workspace:
           at: << parameters.attach-at >>
       - pack:
