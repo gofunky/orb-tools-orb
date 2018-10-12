@@ -43,6 +43,8 @@ commands:
             NOTE: this currently assumes you are publishing to the registry at circleci.com
           command: >
             source /usr/local/bin/envload
+            export REPOSITORY_ORGANIZATION=$(git remote -v | grep "(fetch)" | sed 's/.*\/\([^ ]*\)\/.*/\1/')
+            export REPOSITORY_NAME=$(basename -s .git `git config --get remote.origin.url`)
             circleci orb publish << parameters.orb-path >> << parameters.orb-ref >>
             <<# parameters.token-variable >>--token << parameters.token-variable >> <</ parameters.token-variable >>
 
@@ -442,14 +444,14 @@ jobs:
           Environment variables from an envorb are accepted.
           By default, the git organization is assumed.
         type: string
-        default: git remote -v | grep "(fetch)" | sed 's/.*\/\([^ ]*\)\/.*/\1/'
+        default: "${REPOSITORY_ORGANIZATION}"
       orb-name:
         description: >
           The name of your orb.
           Environment variables from an envorb are accepted.
           By default, the git repository name is assumed.
         type: string
-        default: basename -s .git `git config --get remote.origin.url`
+        default: "${REPOSITORY_NAME}"
       version:
         description: >
           The publishing version of your orb.
