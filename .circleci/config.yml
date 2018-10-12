@@ -1,36 +1,44 @@
 version: 2.1
 
 orbs:
-  orb-tools: circleci/orb-tools@dev:refactor-to-unify-publishing
+  orb-tools: circleci/orb-tools@volatile
+
+master_filter: &master_filter
+  filters:
+    branches:
+      only:
+        - master
 
 workflows:
-  default-workflow:
+  publish_latest:
     jobs:
       - orb-tools/pack:
-          source-dir: src/
-          destination-orb-path: packed/orb.yml
-          workspace-path: packed/orb.yml
-          artifact-path: packed/orb.yml
-          validate: true
-
+          name: validate_orb
+          <<: *master_filter
+          source-dir: ./src/
+          destination-orb-path: ./packed/orb.yml
+          workspace-path: ./packed/orb.yml
+          artifact-path: ./packed/orb.yml
       - orb-tools/publish:
+          name: publish_orb
+          <<: *master_filter
+          context: orb-tools
+          orb-ref: "gofunky/orbtools@dev:${CIRCLE_BRANCH}"
+          publish-token-variable: "$ORB_PUBLISHING_TOKEN"
           orb-path: packed/orb.yml
-          orb-ref: "circleci/orb-tools@dev:${CIRCLE_BRANCH}"
-          publish-token-variable: "$CIRCLECI_API_TOKEN"
           attach-workspace: true
           checkout: false
-          validate: true
-          requires: [orb-tools/pack]
-
-     #- orb-tools/increment:
-     #    orb-path: packed/orb.yml
-     #    orb-ref: "circleci/orb-tools"
-     #    segment: "patch"
-     #    publish-token-variable: "$CIRCLECI_API_TOKEN"
-     #    attach-workspace: true
-     #    checkout: false
-     #    validate: true
-     #    requires: [orb-tools/pack]
-     #    filters:
-     #      branches:
-     #        only: master
+          requires:
+            - validate_orb
+      - orb-tools/increment:
+          name: increment_orb
+          <<: *master_filter
+          context: orb-tools
+          segment: patch
+          orb-ref: gofunky/orbtools
+          publish-token-variable: "$ORB_PUBLISHING_TOKEN"
+          orb-path: packed/orb.yml
+          attach-workspace: true
+          checkout: false
+          requires:
+            - publish_orb

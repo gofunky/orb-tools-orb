@@ -1,0 +1,136 @@
+orbs:
+  envorb: gofunky/envorb@0.2.6
+
+commands:
+  install:
+    steps:
+      - envorb/install
+  env-publish:
+    description: Uses the CLI to publish an orb to the registry.
+    parameters:
+      orb-path:
+        description: The path to the orb file.
+        type: string
+      orb-ref:
+        description: >
+          A fully-qualified reference to an orb. This takes the form <namespace>/<orb-name>@<version>
+          NOTE: To publish a dev version prefix the version with 'dev:' like this: <namespace>/<orb-name>@dev:<label>
+        type: string
+      token-variable:
+        description: >
+          The env var containing your token. Pass this as a literal string such
+          as `$ORB_PUBLISHING_TOKEN`. Do not paste the actual token into your
+          configuration. If omitted it's assumed the CLI has already been setup
+          with a valid token.
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: >
+            Publish orb at << parameters.orb-path >> to << parameters.orb-ref >>
+            NOTE: this currently assumes you are publishing to the registry at circleci.com
+          command: >
+            source /usr/local/bin/envload
+            circleci orb publish << parameters.orb-path >> << parameters.orb-ref >>
+            <<# parameters.token-variable >>--token << parameters.token-variable >> <</ parameters.token-variable >>
+
+jobs:
+  env-pack-publish:
+    description: Pack the contents of an orb for publishing and publish it.
+    parameters:
+      source-dir:
+        description: >
+          Path to the root of the orb source directory to be packed. (e.g., `src/`)
+        type: string
+      destination-file:
+        description: Path including filename of where the packed orb will be written.
+        type: string
+        default: ./.orbspace/orb.yml
+      validate:
+        description: Boolean for whether or not to do validation on the orb. Default is true.
+        type: boolean
+        default: true
+      checkout:
+        description: Boolean for whether or not to checkout as a first step. Default is true.
+        type: boolean
+        default: true
+      attach-at:
+        description: >
+          Workspace root path that is either an absolute path or a path relative
+          to the working directory. Defaults to '.' (the working directory).
+        type: string
+        default: "."
+      persist:
+        description: If enabled, the destination-file will be persisted.
+        type: boolean
+        default: false
+      store-artifact:
+        description: If enabled, the destination-file will be stored as artifact.
+        type: boolean
+        default: true
+      namespace:
+        description: >
+          The namespace of your orb.
+          Environment variables from an envorb are accepted.
+          By default, the git organization is assumed.
+        type: string
+        default: git remote -v | grep "(fetch)" | sed 's/.*\/\([^ ]*\)\/.*/\1/'
+      name:
+        description: >
+          The name of your orb.
+          Environment variables from an envorb are accepted.
+          By default, the git repository name is assumed.
+        type: string
+        default: basename -s .git `git config --get remote.origin.url`
+      version:
+        description: >
+          The publishing version of your orb.
+          Either use an incrementing semantic version (e.g., 1.0.0), or a development version as `dev:<label>`,
+          where `label` can be any alphanumeric string.
+          Environment variables from an envorb are accepted.
+          By default, the environment variable `$ORB_PUBLISHING_VERSION` is assumed.
+        type: string
+        default: "${ORB_PUBLISHING_VERSION}"
+      publish-token-variable:
+        description: >
+          The env var containing your publish token. Pass this as a literal string such
+          as `$ORB_PUBLISHING_TOKEN`. DO NOT paste the actual token into your
+          configuration. If omitted it's assumed the CLI has already been setup
+          with a valid token.
+          By default, an environment variable `$ORB_PUBLISHING_TOKEN` is expected.
+          Make sure to pass a context to this job that contains the variable.
+        type: string
+        default: "${ORB_PUBLISHING_TOKEN}"
+    executor: cli/default
+    steps:
+      - install
+      - when:
+          condition: << parameters.checkout >>
+          steps:
+            - checkout
+      - attach_workspace:
+          at: << parameters.attach-at >>
+      - pack:
+          source: << parameters.source-dir >>
+          destination: << parameters.destination-file >>
+      - when:
+          condition: << parameters.validate >>
+          steps:
+            - validate:
+                orb-path: << parameters.destination-file >>
+      - env-publish:
+          orb-path: << parameters.destination-file >>
+          orb-ref: "<< parameters.namespace >>/<< parameters.name >>@<< parameters.version >>"
+          token-variable: << parameters.publish-token-variable >>
+      - when:
+          condition: << parameters.persist >>
+          steps:
+            - persist_to_workspace:
+                root: << parameters.attach-at >>
+                paths:
+                  - << parameters.destination-file >>
+      - when:
+          condition: << parameters.store-artifact >>
+          steps:
+            - store_artifacts:
+                path: << parameters.destination-file >>
