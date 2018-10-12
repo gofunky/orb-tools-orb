@@ -401,7 +401,7 @@ jobs:
           By default, the git organization is assumed.
         type: string
         default: git remote -v | grep "(fetch)" | sed 's/.*\/\([^ ]*\)\/.*/\1/'
-      name:
+      orb-name:
         description: >
           The name of your orb.
           Environment variables from an envorb are accepted.
@@ -446,7 +446,7 @@ jobs:
                 orb-path: << parameters.destination-file >>
       - env-publish:
           orb-path: << parameters.destination-file >>
-          orb-ref: "<< parameters.namespace >>/<< parameters.name >>@<< parameters.version >>"
+          orb-ref: "<< parameters.namespace >>/<< parameters.orb-name >>@<< parameters.version >>"
           token-variable: << parameters.publish-token-variable >>
       - when:
           condition: << parameters.persist >>
