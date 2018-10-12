@@ -361,13 +361,46 @@ jobs:
           orb-ref: << parameters.orb-ref >>
           token-variable: << parameters.publish-token-variable >>
 
+  check:
+    description: Pack and validate the orb only.
+      parameters:
+        source-dir:
+          description: >
+            Path to the root of the orb source directory to be packed.
+            By default, `src/` is assumed.
+          type: string
+          default: src/
+        destination-file:
+          description: Path including filename of where the packed orb will be written.
+          type: string
+          default: ./.orbspace/orb.yml
+        store-artifact:
+          description: If enabled, the destination-file will be stored as artifact.
+          type: boolean
+          default: true
+      executor: cli/default
+      steps:
+        - checkout
+        - pack:
+            source: << parameters.source-dir >>
+            destination: << parameters.destination-file >>
+        - validate:
+            orb-path: << parameters.destination-file >>
+        - when:
+            condition: << parameters.store-artifact >>
+            steps:
+              - store_artifacts:
+                  path: << parameters.destination-file >>
+
   env-pack-publish:
     description: Pack the contents of an orb for publishing and publish it.
     parameters:
       source-dir:
         description: >
-          Path to the root of the orb source directory to be packed. (e.g., `src/`)
+          Path to the root of the orb source directory to be packed.
+          By default, `src/` is assumed.
         type: string
+        default: src/
       destination-file:
         description: Path including filename of where the packed orb will be written.
         type: string
