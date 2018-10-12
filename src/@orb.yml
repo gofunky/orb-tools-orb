@@ -378,7 +378,9 @@ jobs:
         description: If enabled, the destination-file will be stored as artifact.
         type: boolean
         default: true
-    executor: envorb/default
+    executor:
+      name: envorb/default
+      alpine_version: "3.8"
     steps:
       - cli/install
       - checkout
@@ -461,7 +463,9 @@ jobs:
           Make sure to pass a context to this job that contains the variable.
         type: string
         default: "${ORB_PUBLISHING_TOKEN}"
-    executor: envorb/default
+    executor:
+      name: envorb/default
+      alpine_version: "3.8"
     steps:
       - cli/install
       - install
