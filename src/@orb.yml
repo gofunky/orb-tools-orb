@@ -378,8 +378,9 @@ jobs:
         description: If enabled, the destination-file will be stored as artifact.
         type: boolean
         default: true
-    executor: cli/default
+    executor: envorb/default
     steps:
+      - cli/install
       - checkout
       - pack:
           source: << parameters.source-dir >>
@@ -460,8 +461,9 @@ jobs:
           Make sure to pass a context to this job that contains the variable.
         type: string
         default: "${ORB_PUBLISHING_TOKEN}"
-    executor: cli/default
+    executor: envorb/default
     steps:
+      - cli/install
       - install
       - when:
           condition: << parameters.checkout >>
