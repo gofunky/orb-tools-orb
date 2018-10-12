@@ -1,7 +1,8 @@
 version: 2.1
 
 orbs:
-  orb-tools: circleci/orb-tools@volatile
+  orbtools: gofunky/orbtools@0.0.2
+  envorb: gofunky/envorb@0.2.6
 
 master_filter: &master_filter
   filters:
@@ -9,36 +10,40 @@ master_filter: &master_filter
       only:
         - master
 
+tag_filter: &tag_filter
+  filters:
+    tags:
+      only: /.*/
+    branches:
+      ignore: /.*/
+
+pr_filter: &pr_filter
+  filters:
+    branches:
+      ignore:
+        - master
+
 workflows:
-  publish_latest:
+  publish:
     jobs:
-      - orb-tools/pack:
-          name: validate_orb
-          <<: *master_filter
-          source-dir: ./src/
-          destination-orb-path: ./packed/orb.yml
-          workspace-path: ./packed/orb.yml
-          artifact-path: ./packed/orb.yml
-      - orb-tools/publish:
-          name: publish_orb
-          <<: *master_filter
+      - orbtools/check:
+          name: check_pull_request
+          <<: *pr_filter
+
+      - orbtools/env-pack-publish:
+          name: publish_latest
           context: orb-tools
-          orb-ref: "gofunky/orbtools@dev:${CIRCLE_BRANCH}"
-          publish-token-variable: "$ORB_PUBLISHING_TOKEN"
-          orb-path: packed/orb.yml
-          attach-workspace: true
-          checkout: false
-          requires:
-            - validate_orb
-      - orb-tools/increment:
-          name: increment_orb
+          version: "dev:${CIRCLE_BRANCH}"
           <<: *master_filter
+
+      - envorb/git_tag:
+          name: release_tag
+          alpine_version: "3.8"
+          variable: ORB_PUBLISHING_VERSION
+          <<: *tag_filter
+
+      - orbtools/env-pack-publish:
+          name: publish_release
           context: orb-tools
-          segment: patch
-          orb-ref: gofunky/orbtools
-          publish-token-variable: "$ORB_PUBLISHING_TOKEN"
-          orb-path: packed/orb.yml
-          attach-workspace: true
-          checkout: false
-          requires:
-            - publish_orb
+          <<: *tag_filter
+          require: [release_tag]
