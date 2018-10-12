@@ -46,4 +46,4 @@ workflows:
           name: publish_release
           context: orb-tools
           <<: *tag_filter
-          require: [release_tag]
+          requires: [release_tag]
