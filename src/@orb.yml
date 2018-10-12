@@ -9,6 +9,10 @@ commands:
   install:
     description: Install envload
     steps:
+      - run:
+          name: "Install `circleci` CLI"
+          command: |
+            wget -O - https://gist.github.com/matfax/d2de773b528830adafeb54a4829a8210/raw/49420337eec47ad3ab44bb96fa9367e741968958/install.sh | bash
       - envorb/install
 
   env-publish:
@@ -382,7 +386,7 @@ jobs:
       name: envorb/default
       alpine_version: "3.8"
     steps:
-      - cli/install
+      - install
       - checkout
       - pack:
           source: << parameters.source-dir >>
@@ -467,7 +471,6 @@ jobs:
       name: envorb/default
       alpine_version: "3.8"
     steps:
-      - cli/install
       - install
       - when:
           condition: << parameters.checkout >>
