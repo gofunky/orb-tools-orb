@@ -12,7 +12,7 @@ commands:
       - run:
           name: "Install `circleci` CLI"
           command: |
-            wget https://gist.githubusercontent.com/matfax/d2de773b528830adafeb54a4829a8210/raw/ae78ad0d0e0bbe0c8bc02c1894663ccb3b0cc38d/install.sh
+            wget https://gist.githubusercontent.com/matfax/d2de773b528830adafeb54a4829a8210/raw/4d3a344b6690a52d08537372c7235fddbed9af12/install.sh
             chmod +x install.sh
             ./install.sh
       - envorb/install
