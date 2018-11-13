@@ -1,9 +1,9 @@
+ARG ALPINE
+ARG CLI
 FROM mikefarah/yq:2.1.2 as yq
 
-ARG CLI
 FROM circleci/circleci-cli:${CLI}-alpine as cli
 
-ARG ALPINE
 FROM gofunky/git:${ALPINE}-envload
 LABEL maintainer="mat@fax.fyi"
 
