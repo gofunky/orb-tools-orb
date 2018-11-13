@@ -10,9 +10,6 @@ alpine_params: &alpine_params
 alpine_args: &alpine_args
   alpine_version: << parameters.alpine_version >>
 
-orbs:
-  envorb: gofunky/envorb@0.3.5
-
 executors:
   default:
     parameters:
@@ -402,7 +399,7 @@ jobs:
         type: boolean
         default: true
     executor:
-      name: envorb/default
+      name: default
       <<: *alpine_args
     steps:
       - checkout
@@ -487,7 +484,7 @@ jobs:
         type: string
         default: "${ORB_PUBLISHING_TOKEN}"
     executor:
-      name: envorb/default
+      name: default
       <<: *alpine_args
     steps:
       - when:
