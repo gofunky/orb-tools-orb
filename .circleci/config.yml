@@ -106,6 +106,9 @@ workflows:
           name: publish_latest
           context: orb-tools
           version: "dev:${CIRCLE_BRANCH}"
+          pre-steps:
+            - run: circleci --help
+            - run: circleci version
           <<: [*master_filter, *use_alpine_version]
 
   release_orb:
