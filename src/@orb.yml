@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   cli: circleci/circleci-cli@volatile
-  envorb: gofunky/envorb@0.3.2
+  envorb: gofunky/envorb@0.3.5
 
 commands:
 
