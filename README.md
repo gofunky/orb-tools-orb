@@ -6,6 +6,7 @@
 ![GitHub License](https://img.shields.io/github/license/gofunky/orbtools.svg)
 [![Microbadger Version](https://images.microbadger.com/badges/version/gofunky/orbtools.svg)](https://microbadger.com/images/gofunky/orbtools "Docker Version")
 [![Microbadger Layers](https://images.microbadger.com/badges/image/gofunky/orbtools.svg)](https://microbadger.com/images/gofunky/orbtools "Docker Layers")
+[![Orb Docs](https://img.shields.io/badge/orb-docs-blue.svg)](https://circleci.com/orbs/registry/orb/gofunky/orbtools)
 [![Docker Pulls](https://img.shields.io/docker/pulls/gofunky/orbtools.svg)](https://hub.docker.com/r/gofunky/orbtools)
 
 An orb that lets you publish orbs effortlessly.
