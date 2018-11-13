@@ -1,22 +1,26 @@
 version: 2.1
 
+alpine_params: &alpine_params
+  alpine_version:
+    description: >
+      Alpine version
+    type: string
+    default: ""
+
+alpine_args: &alpine_args
+  alpine_version: << parameters.alpine_version >>
+
 orbs:
-  cli: circleci/circleci-cli@volatile
   envorb: gofunky/envorb@0.3.5
 
+executors:
+  default:
+    parameters:
+      <<: *alpine_params
+    docker:
+      - image: gofunky/orbtools:alpine<< parameters.alpine_version >>
+
 commands:
-
-  install:
-    description: Install envload
-    steps:
-      - run:
-          name: "Install `circleci` CLI"
-          command: |
-            wget https://gist.githubusercontent.com/matfax/d2de773b528830adafeb54a4829a8210/raw/4d3a344b6690a52d08537372c7235fddbed9af12/install.sh
-            chmod +x install.sh
-            ./install.sh
-      - envorb/install
-
   env-publish:
     description: Uses the CLI to publish an orb to the registry.
     parameters:
@@ -152,6 +156,7 @@ jobs:
       *Experimental*
       Pack the contents of an orb for publishing.
     parameters:
+      <<: [*alpine_params]
       source-dir:
         description: >
           Path to the root of the orb source directory to be packed. (ie: my-orb/src/)
@@ -199,8 +204,8 @@ jobs:
         type: string
         default: ""
     executor:
-      name: cli/default
-      tag: alpine
+      name: default
+      <<: *alpine_args
     steps:
       # Setup
       - when:
@@ -242,9 +247,10 @@ jobs:
       Uses the CLI to increment the version of an orb in the registry.
       If the orb does not have a version yet it starts at 0.0.0
     executor:
-      name: cli/default
-      tag: alpine
+      name: default
+      <<: *alpine_args
     parameters:
+      <<: [*alpine_params]
       orb-path:
         description: Path to an orb file.
         type: string
@@ -313,9 +319,10 @@ jobs:
 
   publish:
     executor:
-      name: cli/default
-      tag: alpine
+      name: default
+      <<: *alpine_args
     parameters:
+      <<: [*alpine_params]
       orb-path:
         description: Path of the orb file to publish.
         type: string
@@ -379,6 +386,7 @@ jobs:
   check:
     description: Pack and validate the orb only.
     parameters:
+      <<: [*alpine_params]
       source-dir:
         description: >
           Path to the root of the orb source directory to be packed.
@@ -395,10 +403,9 @@ jobs:
         default: true
     executor:
       name: envorb/default
-      alpine_version: "3.8"
+      <<: *alpine_args
     steps:
       - checkout
-      - install
       - pack:
           source: << parameters.source-dir >>
           destination: << parameters.destination-file >>
@@ -413,6 +420,7 @@ jobs:
   env-pack-publish:
     description: Pack the contents of an orb for publishing and publish it.
     parameters:
+      <<: [*alpine_params]
       source-dir:
         description: >
           Path to the root of the orb source directory to be packed.
@@ -480,13 +488,12 @@ jobs:
         default: "${ORB_PUBLISHING_TOKEN}"
     executor:
       name: envorb/default
-      alpine_version: "3.8"
+      <<: *alpine_args
     steps:
       - when:
           condition: << parameters.checkout >>
           steps:
             - checkout
-      - install
       - attach_workspace:
           at: << parameters.attach-at >>
       - pack:
