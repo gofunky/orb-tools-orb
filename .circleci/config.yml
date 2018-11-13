@@ -25,16 +25,18 @@ pr_filter: &pr_filter
         - master
 
 use_alpine_version: &use_alpine_version
-  alpine_version: "3.8"
+
 
 set_alpine_version: &set_alpine_version
   <<: *use_alpine_version
+  alpine_version: "3.8"
   attach: true
   variable: ALPINE_VERSION
   value: "3.8"
 
 set_cli_version: &set_cli_version
   <<: *use_alpine_version
+  alpine_version: "3.8"
   variable: CLI_VERSION
   repository: "CircleCI-Public/circleci-cli"
 
