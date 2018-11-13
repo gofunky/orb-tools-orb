@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  orbtools: gofunky/orbtools@0.1.1
+  orbtools: gofunky/orbtools@0.2.1
   envorb: gofunky/envorb@0.3.5
   docker: gofunky/docker@0.1.2
 
@@ -24,15 +24,17 @@ pr_filter: &pr_filter
       ignore:
         - master
 
+use_alpine_version: &use_alpine_version
+  alpine_version: "3.8"
 
 set_alpine_version: &set_alpine_version
-  alpine_version: "3.8"
+  <<: *use_alpine_version
   attach: true
   variable: ALPINE_VERSION
   value: "3.8"
 
 set_cli_version: &set_cli_version
-  alpine_version: "3.8"
+  <<: *use_alpine_version
   variable: CLI_VERSION
   repository: "CircleCI-Public/circleci-cli"
 
@@ -96,7 +98,7 @@ workflows:
     jobs:
       - orbtools/check:
           name: check_pull_request
-          <<: [*pr_filter]
+          <<: [*pr_filter, *use_alpine_version]
 
   publish_orb:
     jobs:
@@ -104,7 +106,7 @@ workflows:
           name: publish_latest
           context: orb-tools
           version: "dev:${CIRCLE_BRANCH}"
-          <<: [*master_filter]
+          <<: [*master_filter, *use_alpine_version]
 
   release_orb:
     jobs:
@@ -112,10 +114,10 @@ workflows:
           name: release_tag
           alpine_version: "3.8"
           variable: ORB_PUBLISHING_VERSION
-          <<: [*tag_filter]
+          <<: [*tag_filter, *use_alpine_version]
 
       - orbtools/env-pack-publish:
           name: publish_release
           context: orb-tools
-          <<: [*tag_filter]
+          <<: [*tag_filter, *use_alpine_version]
           requires: [release_tag]
