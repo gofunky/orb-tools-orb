@@ -4,7 +4,7 @@ FROM mikefarah/yq:2.1.2 as yq
 
 FROM circleci/circleci-cli:${CLI}-alpine as cli
 
-FROM gofunky/git:${ALPINE}-envload
+FROM gofunky/git:alpine${ALPINE}-envload
 LABEL maintainer="mat@fax.fyi"
 
 COPY --from=yq /usr/bin/yq /usr/local/bin/yq
