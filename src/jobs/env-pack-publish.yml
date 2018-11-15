@@ -1,16 +1,10 @@
-alpine_params: &alpine_params
+description: Pack the contents of an orb for publishing and publish it.
+parameters:
   alpine_version:
     description: >
       Alpine version
     type: string
     default: ""
-
-alpine_args: &alpine_args
-  alpine_version: << parameters.alpine_version >>
-
-description: Pack the contents of an orb for publishing and publish it.
-parameters:
-  <<: [*alpine_params]
   source-dir:
     description: >
       Path to the root of the orb source directory to be packed.
@@ -84,7 +78,7 @@ parameters:
     default: true
 executor:
   name: default
-  <<: *alpine_args
+  alpine_version: << parameters.alpine_version >>
 steps:
   - when:
       condition: << parameters.checkout >>
