@@ -38,13 +38,18 @@ set_cli_version: &set_cli_version
   variable: CLI_VERSION
   repository: "CircleCI-Public/circleci-cli"
 
+set_envtpl_version: &set_envtpl_version
+  <<: *use_alpine_version
+  variable: ENVTPL_VERSION
+  repository: "mattrobenolt/envtpl"
+
 orbtools_job: &orbtools_job
   attach: true
   base_tag: orbtools
   add_labels: true
   docker_version: 18.09.0
   context: docker-hub
-  args: "VERSION=${CLI_VERSION},ALPINE=${ALPINE_VERSION},CLI=${CLI_VERSION}"
+  args: "VERSION=${CLI_VERSION},ALPINE=${ALPINE_VERSION},CLI=${CLI_VERSION},ENVTPL=${ENVTPL_VERSION}"
 
 workflows:
   build_latest_image:
@@ -52,6 +57,10 @@ workflows:
       - envorb/github:
           name: set_cli_version
           <<: *set_cli_version
+
+      - envorb/github:
+          name: set_envtpl_version
+          <<: *set_envtpl_version
 
       - envorb/value:
           name: set_alpine_version

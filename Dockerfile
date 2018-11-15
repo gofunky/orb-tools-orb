@@ -13,9 +13,14 @@ RUN chmod +x /usr/local/bin/yq
 COPY --from=cli /usr/local/bin/circleci /usr/local/bin/circleci
 RUN chmod +x /usr/local/bin/circleci
 
-RUN apk add --no-cache bash gawk sed grep bc coreutils
-RUN wget -O /usr/local/bin/templater https://raw.githubusercontent.com/johanhaleby/bash-templater/master/templater.sh
-RUN chmod +x /usr/local/bin/templater
+ARG ENVTPL
+RUN wget -O /usr/local/bin/envtpl "https://github.com/mattrobenolt/envtpl/releases/download/$ENVTPL/envtpl-linux-amd64" \
+    && wget -O /usr/local/bin/envtpl.asc "https://github.com/mattrobenolt/envtpl/releases/download/$ENVTPL/envtpl-linux-amd64.asc" \
+    && export GNUPGHOME="$(mktemp -d)" \
+    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys D8749766A66DD714236A932C3B2D400CE5BBCA60 \
+    && gpg --batch --verify /usr/local/bin/envtpl.asc /usr/local/bin/envtpl \
+    && rm -r "$GNUPGHOME" /usr/local/bin/envtpl.asc \
+    && chmod +x /usr/local/bin/envtpl
 
 ARG VERSION
 ARG BUILD_DATE

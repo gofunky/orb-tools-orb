@@ -13,4 +13,5 @@ steps:
         the respective environment variables `${VAR}`.
       command: |
         source /usr/local/bin/envload
-        templater << parameters.orb-path >> -s > << parameters.target-path >>
+        mv << parameters.orb-path >> << parameters.orb-path >>.tpl
+        templater << parameters.orb-path >>.tpl
