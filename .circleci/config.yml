@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   orbtools: gofunky/orbtools@0.3.0
-  envorb: gofunky/envorb@dev:76
+  envorb: gofunky/envorb@0.3.7
   docker: gofunky/docker@0.1.2
 
 master_filter: &master_filter
@@ -105,7 +105,7 @@ workflows:
       - orbtools/env-pack-publish:
           name: publish_latest
           context: orb-tools
-          version: "dev:${CIRCLE_BRANCH}"
+          version: "dev:${CIRCLE_BUILD_NUM}"
           <<: [*master_filter, *use_alpine_version]
 
   release_orb:
