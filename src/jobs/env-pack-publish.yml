@@ -94,6 +94,7 @@ steps:
       steps:
         - env-templater:
             orb-path: << parameters.destination-file >>
+            target-path: << parameters.destination-file >>
   - when:
       condition: << parameters.validate >>
       steps:

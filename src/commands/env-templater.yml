@@ -3,6 +3,9 @@ parameters:
   orb-path:
     description: The path to the orb file.
     type: string
+  target-path:
+    description: The file path of the target file.
+    type: string
 steps:
   - run:
       name: >
@@ -10,4 +13,4 @@ steps:
         the respective environment variables `${VAR}`.
       command: |
         source /usr/local/bin/envload
-        templater << parameters.orb-path >>
+        templater << parameters.orb-path >> -s > << parameters.target-path >>
