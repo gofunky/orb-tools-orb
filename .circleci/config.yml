@@ -38,18 +38,13 @@ set_cli_version: &set_cli_version
   variable: CLI_VERSION
   repository: "CircleCI-Public/circleci-cli"
 
-set_envtpl_version: &set_envtpl_version
-  <<: *use_alpine_version
-  variable: ENVTPL_VERSION
-  repository: "mattrobenolt/envtpl"
-
 orbtools_job: &orbtools_job
   attach: true
   base_tag: orbtools
   add_labels: true
   docker_version: 18.09.0
   context: docker-hub
-  args: "VERSION=${CLI_VERSION},ALPINE=${ALPINE_VERSION},CLI=${CLI_VERSION},ENVTPL=${ENVTPL_VERSION}"
+  args: "VERSION=${CLI_VERSION},ALPINE=${ALPINE_VERSION},CLI=${CLI_VERSION}"
 
 workflows:
   build_latest_image:
@@ -57,10 +52,6 @@ workflows:
       - envorb/github:
           name: set_cli_version
           <<: *set_cli_version
-
-      - envorb/github:
-          name: set_envtpl_version
-          <<: *set_envtpl_version
 
       - envorb/value:
           name: set_alpine_version
@@ -72,13 +63,13 @@ workflows:
           tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:${CLI_VERSION}-alpine${ALPINE_VERSION},gofunky/orbtools:alpine${ALPINE_VERSION},gofunky/orbtools:latest"
           login: docker login -u $DOCKER_USR -p $DOCKER_PWD
           cache: true
-          requires: [set_cli_version, set_alpine_version, set_envtpl_version]
+          requires: [set_cli_version, set_alpine_version]
 
       - docker/build_test:
           name: test_latest
           <<: [*pr_filter, *orbtools_job]
           tags: "gofunky/orbtools:latest"
-          requires: [set_cli_version, set_alpine_version, set_envtpl_version]
+          requires: [set_cli_version, set_alpine_version]
 
   build_daily_image:
     triggers:
@@ -91,10 +82,6 @@ workflows:
           name: set_cli_version
           <<: *set_cli_version
 
-      - envorb/github:
-          name: set_envtpl_version
-          <<: *set_envtpl_version
-
       - envorb/value:
           name: set_alpine_version
           <<: *set_alpine_version
@@ -105,7 +92,7 @@ workflows:
           tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:${CLI_VERSION}-alpine${ALPINE_VERSION},gofunky/orbtools:alpine${ALPINE_VERSION},gofunky/orbtools:latest,gofunky/orbtools:stable-alpine${ALPINE_VERSION},gofunky/orbtools:stable,gofunky/orbtools:daily"
           login: docker login -u $DOCKER_USR -p $DOCKER_PWD
           cache: true
-          requires: [set_cli_version, set_alpine_version, set_envtpl_version]
+          requires: [set_cli_version, set_alpine_version]
 
   check_orb:
     jobs:
