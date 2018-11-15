@@ -1,0 +1,13 @@
+description: Replaces all template variables with the respective environment variables.
+parameters:
+  orb-path:
+    description: The path to the orb file.
+    type: string
+steps:
+  - run:
+      name: >
+        Loads all environment variables from previous envorb calls and replaces all template variables `{{VAR}}` with
+        the respective environment variables `${VAR}`.
+      command: |
+        source /usr/local/bin/envload
+        templater << parameters.orb-path >>

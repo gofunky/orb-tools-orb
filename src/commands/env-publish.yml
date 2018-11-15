@@ -1,0 +1,30 @@
+description: Uses the CLI to publish an orb to the registry.
+parameters:
+  orb-path:
+    description: The path to the orb file.
+    type: string
+  orb-ref:
+    description: >
+      A fully-qualified reference to an orb. This takes the form <namespace>/<orb-name>@<version>
+      NOTE: To publish a dev version prefix the version with 'dev:' like this: <namespace>/<orb-name>@dev:<label>
+    type: string
+  token-variable:
+    description: >
+      The env var containing your token. Pass this as a literal string such
+      as `$ORB_PUBLISHING_TOKEN`. Do not paste the actual token into your
+      configuration. If omitted it's assumed the CLI has already been setup
+      with a valid token.
+    type: string
+    default: ""
+steps:
+  - run:
+      name: >
+        Publish orb at << parameters.orb-path >> to << parameters.orb-ref >>
+        NOTE: this currently assumes you are publishing to the registry at circleci.com
+      command: |
+        source /usr/local/bin/envload
+        export REPOSITORY_ORGANIZATION=$(git config --get remote.origin.url | rev | tr '.:' '/' | cut -d'/' -f3 | rev)
+        echo "SET REPOSITORY_ORGANIZATION: ${REPOSITORY_ORGANIZATION}"
+        export REPOSITORY_NAME=$(git config --get remote.origin.url | rev | tr '.:' '/' | cut -d'/' -f2 | rev)
+        echo "SET REPOSITORY_NAME: ${REPOSITORY_NAME}"
+        circleci orb publish << parameters.orb-path >> << parameters.orb-ref >> <<# parameters.token-variable >>--token << parameters.token-variable >> <</ parameters.token-variable >>
