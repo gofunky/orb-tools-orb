@@ -13,6 +13,7 @@ RUN chmod +x /usr/local/bin/yq
 COPY --from=cli /usr/local/bin/circleci /usr/local/bin/circleci
 RUN chmod +x /usr/local/bin/circleci
 
+RUN RUN apk add --no-cache bash gawk sed grep bc coreutils
 RUN wget -O /usr/local/bin/templater https://raw.githubusercontent.com/johanhaleby/bash-templater/master/templater.sh
 RUN chmod +x /usr/local/bin/templater
 
