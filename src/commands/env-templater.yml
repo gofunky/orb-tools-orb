@@ -14,4 +14,4 @@ steps:
       command: |
         source /usr/local/bin/envload
         mv << parameters.orb-path >> << parameters.orb-path >>.tpl
-        templater << parameters.orb-path >>.tpl
+        envtpl << parameters.orb-path >>.tpl
