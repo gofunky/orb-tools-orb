@@ -116,7 +116,7 @@ steps:
       steps:
         - envorb/value:
             variable: ORB_PUBLISHING_NAME
-      value: << parameters.orb-name >>
+            value: << parameters.orb-name >>
   - unless:
       condition: << parameters.orb-name >>
       steps:
