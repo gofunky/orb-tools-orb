@@ -17,6 +17,9 @@ executors:
     docker:
       - image: gofunky/orbtools:alpine<< parameters.alpine_version >>
 
+orbs:
+  envorb: gofunky/envorb@0.3.8
+
 commands:
   pack:
     description: >
