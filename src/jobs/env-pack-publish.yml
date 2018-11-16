@@ -73,7 +73,7 @@ parameters:
   patch-environment-variables:
     description: >
       To replace all template variables with the respective environment variables.
-      Variables have to be defined in the format `{{VAR}}`.
+      Variables have to be defined in the format `{{"{{"}}.VAR{{"}}"}}`.
     type: boolean
     default: true
 executor:

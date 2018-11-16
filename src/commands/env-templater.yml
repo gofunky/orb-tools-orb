@@ -9,8 +9,8 @@ parameters:
 steps:
   - run:
       name: >
-        Loads all environment variables from previous envorb calls and replaces all template variables `{{VAR}}` with
-        the respective environment variables `${VAR}`.
+        Loads all environment variables from previous envorb calls and replaces
+        all template variables `{{"{{"}}.VAR{{"}}"}}` with the respective environment variables `${VAR}`.
       command: |
         source /usr/local/bin/envload
         mv << parameters.orb-path >> << parameters.orb-path >>.tpl
