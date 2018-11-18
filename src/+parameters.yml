@@ -12,3 +12,37 @@ publish-token-variable:
     Make sure to pass a context to this job that contains the variable.
   type: string
   default: "${ORB_PUBLISHING_TOKEN}"
+
+destination-file:
+  description: Path including filename of where the packed orb will be written.
+  type: string
+  default: ./.orbspace/orb.yml
+
+source-dir:
+  description: >
+    Path to the root of the orb source directory to be packed.
+    By default, `src/` is assumed.
+  type: string
+  default: src/
+
+store-artifact:
+  description: If enabled, the destination-file will be stored as artifact.
+  type: boolean
+  default: true
+
+patch-environment-variables:
+  description: >
+    To replace all template variables with the respective environment variables.
+    Variables have to be defined in the format `{{"{{"}}.VAR{{"}}"}}`.
+  type: boolean
+  default: true
+
+patch-parameters:
+  description: >
+    To patch all crosscutting parameters defined in the src/+parameters.yml file.
+    Parameters that are shared among multiple commands, orbs or executors can thereby be shared.
+    Define the parameters in the root layer of the +parameters.yml file.
+    In every yaml file inside the commands, jobs, or executors folder, the parameters are propagated if they
+    are referenced there via << parameters.xyz >>.
+  type: boolean
+  default: true

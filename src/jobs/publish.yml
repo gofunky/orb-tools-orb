@@ -3,16 +3,6 @@ description: >
   It adds a environment variable patching and cross-cutting parameters.
 
 parameters:
-  source-dir:
-    description: >
-      Path to the root of the orb source directory to be packed.
-      By default, `src/` is assumed.
-    type: string
-    default: src/
-  destination-file:
-    description: Path including filename of where the packed orb will be written.
-    type: string
-    default: ./.orbspace/orb.yml
   validate:
     description: Boolean for whether or not to do validation on the orb. Default is true.
     type: boolean
@@ -31,10 +21,6 @@ parameters:
     description: If enabled, the destination-file will be persisted.
     type: boolean
     default: false
-  store-artifact:
-    description: If enabled, the destination-file will be stored as artifact.
-    type: boolean
-    default: true
   namespace:
     description: >
       The namespace of your target orb.
@@ -58,21 +44,6 @@ parameters:
       By default, the environment variable `$ORB_PUBLISHING_VERSION` is assumed.
     type: string
     default: "${ORB_PUBLISHING_VERSION}"
-  patch-environment-variables:
-    description: >
-      To replace all template variables with the respective environment variables.
-      Variables have to be defined in the format `{{"{{"}}.VAR{{"}}"}}`.
-    type: boolean
-    default: true
-  patch-parameters:
-    description: >
-      To patch all crosscutting parameters defined in the src/+parameters.yml file.
-      Parameters that are shared among multiple commands, orbs or executors can thereby be shared.
-      Define the parameters in the root layer of the +parameters.yml file.
-      In every yaml file inside the commands, jobs, or executors folder, the parameters are propagated if they
-      are referenced there via << parameters.xyz >>.
-    type: boolean
-    default: true
 
 executor:
   name: default

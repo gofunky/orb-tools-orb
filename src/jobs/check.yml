@@ -1,0 +1,32 @@
+description: Pack and validate the orb only.
+
+executor:
+  name: default
+  alpine_version: << parameters.alpine_version >>
+
+steps:
+  - checkout
+  - when:
+      condition: << parameters.patch-parameters >>
+      steps:
+        - merge-parameters
+  - pack:
+      source: << parameters.source-dir >>
+      destination: << parameters.destination-file >>
+  - when:
+      condition: << parameters.patch-environment-variables >>
+      steps:
+        - env-templater:
+            orb-path: << parameters.destination-file >>
+            target-path: << parameters.destination-file >>
+  - validate:
+      orb-path: << parameters.destination-file >>
+  - when:
+      condition: << parameters.store-artifact >>
+      steps:
+        - store_artifacts:
+            path: << parameters.destination-file >>
+        - store_artifacts:
+            path: .parameters
+        - store_artifacts:
+            path: src

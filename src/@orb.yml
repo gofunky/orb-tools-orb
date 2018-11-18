@@ -1,57 +1,5 @@
 version: 2.1
 
-alpine_params: &alpine_params
-  alpine_version:
-    description: >
-      Alpine version
-    type: string
-    default: ""
-
-alpine_args: &alpine_args
-  alpine_version: << parameters.alpine_version >>
-
-executors:
-  default:
-    parameters:
-      <<: *alpine_params
-    docker:
-      - image: gofunky/orbtools:alpine<< parameters.alpine_version >>
-
 orbs:
   envorb: gofunky/envorb@0.3.9
   orb-tools: circleci/orb-tools@2.0.2
-
-jobs:
-  check:
-    description: Pack and validate the orb only.
-    parameters:
-      <<: [*alpine_params]
-      source-dir:
-        description: >
-          Path to the root of the orb source directory to be packed.
-          By default, `src/` is assumed.
-        type: string
-        default: src/
-      destination-file:
-        description: Path including filename of where the packed orb will be written.
-        type: string
-        default: ./.orbspace/orb.yml
-      store-artifact:
-        description: If enabled, the destination-file will be stored as artifact.
-        type: boolean
-        default: true
-    executor:
-      name: default
-      <<: *alpine_args
-    steps:
-      - checkout
-      - pack:
-          source: << parameters.source-dir >>
-          destination: << parameters.destination-file >>
-      - validate:
-          orb-path: << parameters.destination-file >>
-      - when:
-          condition: << parameters.store-artifact >>
-          steps:
-            - store_artifacts:
-                path: << parameters.destination-file >>
