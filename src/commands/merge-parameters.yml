@@ -21,8 +21,9 @@ steps:
                 echo \"Parameter was found in '{}'\" && \
                 yq r -v src/+parameters.yml $param > ./.parameters/$param.yml && \
                 yq p -v -i ./.parameters/$param.yml parameters.$param && \
-                rm -fv {} && \
-                yq m -v -x {} ./.parameters/$param.yml >> {} \
+                mv {} {}.old && \
+                yq m -v -x {}.old ./.parameters/$param.yml >> {} && \
+                rm -fv {}.old
               "
         done
         rm -fv src/+parameters.yml
