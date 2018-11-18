@@ -21,6 +21,5 @@ steps:
               yq r 'src/+parameters.yml' $param > "./.parameters/$param" && \
               yq p -i "./.parameters/$param" "parameters.$param" && \
               yq m -x $@ "./.parameters/$param" > $@
-          fi
         done
         rm -f src/+parameters.yml
