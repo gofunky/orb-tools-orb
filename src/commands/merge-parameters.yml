@@ -11,7 +11,7 @@ steps:
       name: Check and merge the given parameters
       command: |
         source /usr/local/bin/envload
-        mkdir ./.parameters
+        mkdir -pv ./.parameters
         for param in $ORB_PARAMETERS; do
           echo "Checking '$param'..."
           grep -rs 'src/commands/*' 'src/jobs/*' 'src/executors/*' -le '\<<\sparameters\.$param\s>>' \
@@ -22,4 +22,4 @@ steps:
               yq p -i "./.parameters/$param" "parameters.$param" && \
               yq m -x $@ "./.parameters/$param" > $@
         done
-        rm -f src/+parameters.yml
+        rm -fv src/+parameters.yml
