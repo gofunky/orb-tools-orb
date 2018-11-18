@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  orbtools: gofunky/orbtools@dev:198
+  orbtools: gofunky/orbtools@dev:222
   envorb: gofunky/envorb@0.3.9
   docker: gofunky/docker@0.1.2
 
