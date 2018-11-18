@@ -23,4 +23,4 @@ steps:
               yq m -x $@ "./.parameters/$param" > $@
           fi
         done
-        rm src/+parameters.yml
+        rm -f src/+parameters.yml
