@@ -1,0 +1,2 @@
+steps:
+  - run: echo "This is a test for << parameters.test-param >>"
