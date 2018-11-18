@@ -17,11 +17,12 @@ steps:
           grep -rs src/commands/* src/jobs/* src/executors/* -le "\<<\sparameters\.$param\s>>" \
             --exclude src/+parameters.yml \
             | xargs -n1 -r -i \
-              sh -c " \
+              sh -vc " \
                 echo \"Parameter was found in '{}'\" && \
                 yq r -v src/+parameters.yml $param > ./.parameters/$param.yml && \
                 yq p -v -i ./.parameters/$param.yml parameters.$param && \
-                yq m -v -x {} ./.parameters/$param.yml > {} \
+                rm -fv {} && \
+                yq m -v -x {} ./.parameters/$param.yml >> {} \
               "
         done
         rm -fv src/+parameters.yml
