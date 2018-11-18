@@ -19,9 +19,9 @@ steps:
             | xargs -n1 -r -i \
               sh -c " \
                 echo \"Parameter was found in '{}'\" && \
-                yq r 'src/+parameters.yml' $param > \"./.parameters/$param.yml\" && \
-                yq p -i \"./.parameters/$param.yml\" \"parameters.$param\" && \
-                yq m -x {} \"./.parameters/$param.yml\" > {} \
+                yq r -v src/+parameters.yml $param > ./.parameters/$param.yml && \
+                yq p -v -i ./.parameters/$param.yml parameters.$param && \
+                yq m -v -x {} ./.parameters/$param.yml > {} \
               "
         done
         rm -fv src/+parameters.yml
