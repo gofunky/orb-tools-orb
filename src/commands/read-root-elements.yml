@@ -1,0 +1,13 @@
+description: >
+  Read all root elements from the given yaml file.
+parameters:
+  variable:
+    description: the variable name in which to store the parsed yaml root elements
+    type: string
+  template-path:
+    description: the file path of the yaml file
+    type: string
+steps:
+  - envorb/cmd:
+      variable: << parameters.variable >>
+      cmd: cat << parameters.template-path >> | grep -Po '^[a-zA-Z][0-9a-zA-Z_-]*'

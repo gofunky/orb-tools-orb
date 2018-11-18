@@ -76,6 +76,15 @@ parameters:
       Variables have to be defined in the format `{{"{{"}}.VAR{{"}}"}}`.
     type: boolean
     default: true
+  patch-parameters:
+    description: >
+      To patch all crosscutting parameters defined in the src/+parameters.yml file.
+      Parameters that are shared among multiple commands, orbs or executors can thereby be shared.
+      Define the parameters in the root layer of the +parameters.yml file.
+      In every yaml file inside the commands, jobs, or executors folder, the parameters are propagated if they
+      are referenced there via << parameters.xyz >>.
+    type: boolean
+    default: true
 executor:
   name: default
   alpine_version: << parameters.alpine_version >>
@@ -86,6 +95,10 @@ steps:
         - checkout
   - attach_workspace:
       at: << parameters.attach-at >>
+  - when:
+      condition: << parameters.patch-parameters >>
+      steps:
+        - merge-parameters
   - pack:
       source: << parameters.source-dir >>
       destination: << parameters.destination-file >>
