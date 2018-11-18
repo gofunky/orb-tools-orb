@@ -10,7 +10,7 @@ steps:
       condition: << parameters.patch-parameters >>
       steps:
         - merge-parameters
-  - pack:
+  - orb-tools/pack:
       source: << parameters.source-dir >>
       destination: << parameters.destination-file >>
   - when:
@@ -19,7 +19,7 @@ steps:
         - env-templater:
             orb-path: << parameters.destination-file >>
             target-path: << parameters.destination-file >>
-  - validate:
+  - orb-tools/validate:
       orb-path: << parameters.destination-file >>
   - when:
       condition: << parameters.store-artifact >>
