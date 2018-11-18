@@ -14,12 +14,14 @@ steps:
         mkdir -pv ./.parameters
         for param in $ORB_PARAMETERS; do
           echo "Checking '$param'..."
-          grep -rs 'src/commands/*' 'src/jobs/*' 'src/executors/*' -le '\<<\sparameters\.$param\s>>' \
-            --exclude 'src/+parameters.yml' \
-            | xargs -n1 -r \
-              echo "Parameter was found in '$@'" && \
-              yq r 'src/+parameters.yml' $param > "./.parameters/$param" && \
-              yq p -i "./.parameters/$param" "parameters.$param" && \
-              yq m -x $@ "./.parameters/$param" > $@
+          grep -rs src/commands/* src/jobs/* src/executors/* -le "\<<\sparameters\.$param\s>>" \
+            --exclude src/+parameters.yml \
+            | xargs -n1 -r -i \
+              sh -c " \
+                echo \"Parameter was found in '{}'\" && \
+                yq r 'src/+parameters.yml' $param > \"./.parameters/$param.yml\" && \
+                yq p -i \"./.parameters/$param.yml\" \"parameters.$param\" && \
+                yq m -x {} \"./.parameters/$param.yml\" > {} \
+              "
         done
         rm -fv src/+parameters.yml
