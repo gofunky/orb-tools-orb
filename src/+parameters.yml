@@ -1,2 +1,14 @@
-test-param:
+alpine_version:
+  description: the Alpine image version
   type: string
+
+publish-token-variable:
+  description: >
+    the env var containing your publish token. Pass this as a literal string such
+    as `$ORB_PUBLISHING_TOKEN`. DO NOT paste the actual token into your
+    configuration. If omitted it's assumed the CLI has already been setup
+    with a valid token.
+    By default, an environment variable `$ORB_PUBLISHING_TOKEN` is expected.
+    Make sure to pass a context to this job that contains the variable.
+  type: string
+  default: "${ORB_PUBLISHING_TOKEN}"
