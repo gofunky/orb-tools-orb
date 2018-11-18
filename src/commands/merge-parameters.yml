@@ -23,7 +23,7 @@ steps:
                 yq p -v -i ./.parameters/$param.yml parameters.$param && \
                 mv {} {}.old && \
                 yq m -v -x {}.old ./.parameters/$param.yml >> {} && \
-                rm -fv {}.old && \
-                exit 0"
+                rm -fv {}.old \
+              " || true
         done
         rm -fv src/+parameters.yml
