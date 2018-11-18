@@ -121,3 +121,7 @@ workflows:
           context: orb-tools
           <<: [*tag_filter, *use_alpine_version]
           requires: [release_tag]
+      - store_artifacts:
+          path: .parameters
+      - store_artifacts:
+          path: src
