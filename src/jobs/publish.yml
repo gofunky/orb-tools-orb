@@ -30,6 +30,15 @@ parameters:
       By default, the environment variable `$ORB_PUBLISHING_VERSION` is assumed.
     type: string
     default: "${ORB_PUBLISHING_VERSION}"
+  test-steps:
+    description: if you need more than 3 test cases, you can define your own test sequence here using the test command
+    type: steps
+    default:
+      - test-set:
+          success-config: << parameters.success-config >>
+          success-verification: << parameters.success-verification >>
+          fail-config: << parameters.fail-config >>
+          fail-verification: << parameters.fail-verification >>
 
 executor:
   name: default

@@ -47,8 +47,9 @@ orbtools_job: &orbtools_job
   args: "VERSION=${CLI_VERSION},ALPINE=${ALPINE_VERSION},CLI=${CLI_VERSION}"
 
 orb_tests: &orb_tests
-  success-config: test/success-test.yml
-  fail-config: test/invalid-test.yml
+  alpine_version: "3.8" # remove this later
+  #success-config: test/success-test.yml
+  #fail-config: test/invalid-test.yml
 
 workflows:
   build_latest_image:

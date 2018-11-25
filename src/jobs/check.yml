@@ -4,6 +4,17 @@ executor:
   name: default
   alpine_version: << parameters.alpine_version >>
 
+parameters:
+  test-steps:
+    description: if you need more than 3 test cases, you can define your own test sequence here using the test command
+    type: steps
+    default:
+      - test-set:
+          success-config: << parameters.success-config >>
+          success-verification: << parameters.success-verification >>
+          fail-config: << parameters.fail-config >>
+          fail-verification: << parameters.fail-verification >>
+
 steps:
   - checkout
   - when:
