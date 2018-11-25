@@ -8,4 +8,5 @@ steps:
   - run:
       name: copy orb over to be able to use as local orb in test config
       command: |
+        source /usr/local/bin/envload
         cp << parameters.orb-path >> ./.orbspace/test/orbs/<< parameters.orb-name >>.yml

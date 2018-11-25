@@ -17,7 +17,9 @@ parameters:
 steps:
   - run:
       name: copy test source of << parameters.test-config >>
-      command: cp << parameters.test-config >> ./.orbspace/test/config.yml
+      command: |
+        source /usr/local/bin/envload
+        cp << parameters.test-config >> ./.orbspace/test/config.yml
   - orb-tools/pack:
       source: ./.orbspace/test
       destination: ./.orbspace/test-case.src.yml
