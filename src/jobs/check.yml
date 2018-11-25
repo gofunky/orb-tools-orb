@@ -39,8 +39,4 @@ steps:
       condition: << parameters.store-artifact >>
       steps:
         - store_artifacts:
-            path: << parameters.destination-file >>
-        - store_artifacts:
-            path: .parameters
-        - store_artifacts:
-            path: src
+            path: .orbspace

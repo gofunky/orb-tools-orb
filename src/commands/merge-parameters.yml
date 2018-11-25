@@ -11,7 +11,7 @@ steps:
       name: Check and merge the given parameters
       command: |
         source /usr/local/bin/envload
-        mkdir -pv ./.parameters
+        mkdir -pv ./.orbspace/parameters
         for param in $ORB_PARAMETERS; do
           echo "Checking '$param'..."
           grep -rs src/commands/* src/jobs/* src/executors/* -le "\<<\sparameters\.$param\s>>" \
@@ -19,10 +19,10 @@ steps:
             | xargs -n1 -r -i \
               sh -vc " \
                 echo \"Parameter was found in '{}'\" && \
-                yq r -v src/+parameters.yml $param > ./.parameters/$param.yml && \
-                yq p -v -i ./.parameters/$param.yml parameters.$param && \
+                yq r -v src/+parameters.yml $param > ./.orbspace/parameters/$param.yml && \
+                yq p -v -i ./.orbspace/parameters/$param.yml parameters.$param && \
                 mv {} {}.old && \
-                yq m -v -x {}.old ./.parameters/$param.yml >> {} && \
+                yq m -v -x {}.old ./.orbspace/parameters/$param.yml >> {} && \
                 rm -fv {}.old \
               " || true
         done
