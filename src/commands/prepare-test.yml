@@ -1,0 +1,10 @@
+description: >
+  Prepare the test packing space and the test orb.
+
+steps:
+  - run:
+      name: create temp directory for packing test config
+      command: mkdir -pv ./.orbspace/test/orbs
+  - run:
+      name: copy orb over to be able to use as local orb in test config
+      command: cp << parameters.orb-path >> ./.orbspace/test/orbs/<< parameters.orb-name >>.yml

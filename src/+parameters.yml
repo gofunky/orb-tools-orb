@@ -18,6 +18,18 @@ destination-file:
   type: string
   default: ./.orbspace/orb.yml
 
+orb-path:
+  description: the path to the orb file
+  type: string
+
+orb-name:
+  description: >
+    The name of your target orb.
+    Environment variables from envorbs are accepted.
+    By default, the git repository name is assumed.
+  type: string
+  default: ""
+
 source-dir:
   description: >
     Path to the root of the orb source directory to be packed.
@@ -46,3 +58,29 @@ patch-parameters:
     are referenced there via << parameters.xyz >>.
   type: boolean
   default: true
+
+success-verification:
+  description: define additional post-test-execution checks to verify that the test succeeded
+  type: steps
+  default: []
+success-config:
+  description: the path to the succeeding test case config that refers to the orb jobs to be tested
+  type: string
+fail-verification:
+  description: define additional post-test-execution checks to verify that the test failed
+  type: steps
+  default: []
+fail-config:
+  description: the path to the failing test case config that refers to the orb jobs to be tested
+  type: string
+  default: ""
+
+test-steps:
+  description: if you need more than 3 test cases, you can define your own test sequence here using the test command
+  type: steps
+  default:
+    - test-set:
+        success-config: << parameters.success-config >>
+        success-verification: << parameters.success-verification >>
+        fail-config: << parameters.fail-config >>
+        fail-verification: << parameters.fail-verification >>

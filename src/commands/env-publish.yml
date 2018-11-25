@@ -2,9 +2,6 @@ description: <
   Uses the CLI to publish an orb to the registry.
   Environment variables from envorbs are accepted.
 parameters:
-  orb-path:
-    description: the path to the orb file
-    type: string
   orb-ref:
     description: >
       A fully-qualified reference to an orb. This takes the form <namespace>/<orb-name>@<version>

@@ -1,8 +1,7 @@
 ARG ALPINE
 ARG CLI
 
-#TODO Change back to FROM mikefarah/yq:2.1.2 as yq once PRs are merged
-FROM gofunky/yq:latest as yq
+FROM mikefarah/yq:2.2.0 as yq
 FROM gofunky/envtpl:0.2.1 as envtpl
 FROM circleci/circleci-cli:${CLI}-alpine as cli
 

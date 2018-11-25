@@ -13,6 +13,10 @@ steps:
   - orb-tools/pack:
       source: << parameters.source-dir >>
       destination: << parameters.destination-file >>
+  - set-namespace:
+      namespace: << parameters.namespace >>
+  - set-name:
+      orb-name: << parameters.orb-name >>
   - when:
       condition: << parameters.patch-environment-variables >>
       steps:
@@ -21,6 +25,10 @@ steps:
             target-path: << parameters.destination-file >>
   - orb-tools/validate:
       orb-path: << parameters.destination-file >>
+  - prepare-test:
+      orb-path: << parameters.destination-file >>
+      orb-name: "${ORB_PUBLISHING_NAME}"
+  - << parameters.test-steps >>
   - when:
       condition: << parameters.store-artifact >>
       steps:

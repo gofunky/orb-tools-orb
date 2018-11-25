@@ -28,13 +28,6 @@ parameters:
       By default, the git organization is assumed.
     type: string
     default: ""
-  orb-name:
-    description: >
-      The name of your target orb.
-      Environment variables from envorbs are accepted.
-      By default, the git repository name is assumed.
-    type: string
-    default: ""
   version:
     description: >
       The publishing version of your orb.
@@ -63,6 +56,10 @@ steps:
   - orb-tools/pack:
       source: << parameters.source-dir >>
       destination: << parameters.destination-file >>
+  - set-namespace:
+      namespace: << parameters.namespace >>
+  - set-name:
+      orb-name: << parameters.orb-name >>
   - when:
       condition: << parameters.patch-environment-variables >>
       steps:
@@ -74,28 +71,10 @@ steps:
       steps:
         - orb-tools/validate:
             orb-path: << parameters.destination-file >>
-  - when:
-      condition: << parameters.namespace >>
-      steps:
-        - envorb/value:
-            variable: ORB_PUBLISHING_NAMESPACE
-            value: << parameters.namespace >>
-  - unless:
-      condition: << parameters.namespace >>
-      steps:
-        - envorb/git_org:
-            variable: ORB_PUBLISHING_NAMESPACE
-  - when:
-      condition: << parameters.orb-name >>
-      steps:
-        - envorb/value:
-            variable: ORB_PUBLISHING_NAME
-            value: << parameters.orb-name >>
-  - unless:
-      condition: << parameters.orb-name >>
-      steps:
-        - envorb/git_name:
-            variable: ORB_PUBLISHING_NAME
+  - prepare-test:
+      orb-path: << parameters.destination-file >>
+      orb-name: "${ORB_PUBLISHING_NAME}"
+  - << parameters.test-steps >>
   - env-publish:
       orb-path: << parameters.destination-file >>
       orb-ref: "${ORB_PUBLISHING_NAMESPACE}/${ORB_PUBLISHING_NAME}@<< parameters.version >>"

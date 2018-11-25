@@ -1,8 +1,5 @@
 description: Replaces all template variables with the respective environment variables.
 parameters:
-  orb-path:
-    description: The path to the orb file.
-    type: string
   target-path:
     description: The file path of the target file.
     type: string

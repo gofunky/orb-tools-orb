@@ -1,5 +1,13 @@
 version: 2.1
 
+description: >
+  This version of the orb tools provides extended functions to the upstream version.
+  First, you can use environment variables from the envorb, e.g., for version tagging.
+  Second, you can use placeholders in your yaml files that are patched by environment variables.
+  Third, you can reduce the overhead of your orbs' parameters by using cross-cutting paramters.
+  Simply define your parameters in your +parameters.yml file and they are propagated to the files where they are
+  referenced during the build.
+
 orbs:
   envorb: gofunky/envorb@0.3.9
   orb-tools: circleci/orb-tools@2.0.2
