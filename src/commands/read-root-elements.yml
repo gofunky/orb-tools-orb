@@ -10,4 +10,4 @@ parameters:
 steps:
   - envorb/cmd:
       variable: << parameters.variable >>
-      cmd: cat << parameters.template-path >> | grep -Po '^[a-zA-Z][0-9a-zA-Z_-]*'
+      cmd: cat << parameters.template-path >> | grep -Po '^[a-zA-Z][0-9a-zA-Z_\-]*'

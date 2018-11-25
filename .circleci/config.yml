@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  orbtools: gofunky/orbtools@dev:343
+  orbtools: gofunky/orbtools@dev:327
   envorb: gofunky/envorb@0.3.9
   docker: gofunky/docker@0.1.2
 
@@ -97,11 +97,13 @@ workflows:
   check_orb:
     jobs:
       - orbtools/check:
+          name: check_pull_request
           <<: [*pr_filter, *use_alpine_version]
 
   publish_orb:
     jobs:
-      - orbtools/publish:
+      - orbtools/env-pack-publish:
+          name: publish_latest
           context: orb-tools
           version: "dev:${CIRCLE_BUILD_NUM}"
           <<: [*master_filter, *use_alpine_version]
@@ -114,7 +116,8 @@ workflows:
           variable: ORB_PUBLISHING_VERSION
           <<: [*tag_filter, *use_alpine_version]
 
-      - orbtools/publish:
+      - orbtools/env-pack-publish:
+          name: publish_release
           context: orb-tools
           <<: [*tag_filter, *use_alpine_version]
           requires: [release_tag]
