@@ -116,7 +116,7 @@ workflows:
           name: release_tag
           alpine_version: "3.8"
           variable: ORB_PUBLISHING_VERSION
-          <<: [*tag_filter, *use_alpine_version, *orb_tests]
+          <<: [*tag_filter, *use_alpine_version]
 
       - orbtools/publish:
           context: orb-tools
