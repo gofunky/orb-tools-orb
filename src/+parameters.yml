@@ -83,3 +83,8 @@ fail-config:
   description: the path to the failing test case config that refers to the orb jobs to be tested
   type: string
   default: ""
+
+test-steps:
+  description: if you need more than 2 test cases, you can define your own test sequence here using the test command
+  type: steps
+  default: []
