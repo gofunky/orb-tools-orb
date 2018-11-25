@@ -12,4 +12,6 @@ steps:
       name: >
         Publish orb at << parameters.orb-path >> to << parameters.orb-ref >>
         NOTE: this currently assumes you are publishing to the registry at circleci.com
-      command: 'source /usr/local/bin/envload && circleci orb publish << parameters.orb-path >> << parameters.orb-ref >> <<# parameters.publish-token-variable >>--token << parameters.publish-token-variable >> <</ parameters.publish-token-variable >>'
+      command: |
+        source /usr/local/bin/envload
+        circleci orb publish << parameters.orb-path >> << parameters.orb-ref >> <<# parameters.publish-token-variable >>--token << parameters.publish-token-variable >> <</ parameters.publish-token-variable >>
