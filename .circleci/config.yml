@@ -97,13 +97,11 @@ workflows:
   check_orb:
     jobs:
       - orbtools/check:
-          name: check_pull_request
           <<: [*pr_filter, *use_alpine_version]
 
   publish_orb:
     jobs:
-      - orbtools/env-pack-publish:
-          name: publish_latest
+      - orbtools/publish:
           context: orb-tools
           version: "dev:${CIRCLE_BUILD_NUM}"
           <<: [*master_filter, *use_alpine_version]
@@ -116,8 +114,7 @@ workflows:
           variable: ORB_PUBLISHING_VERSION
           <<: [*tag_filter, *use_alpine_version]
 
-      - orbtools/env-pack-publish:
-          name: publish_release
+      - orbtools/publish:
           context: orb-tools
           <<: [*tag_filter, *use_alpine_version]
           requires: [release_tag]
