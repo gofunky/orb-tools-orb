@@ -70,7 +70,8 @@ steps:
   - << parameters.test-steps >>
   - env-publish:
       orb-path: << parameters.destination-file >>
-      orb-ref: "${ORB_PUBLISHING_NAMESPACE}/${ORB_PUBLISHING_NAME}@<< parameters.version >>"
+      orb-ref: |
+        ${ORB_PUBLISHING_NAMESPACE}/${ORB_PUBLISHING_NAME}@<< parameters.version >>
       publish-token-variable: << parameters.publish-token-variable >>
   - when:
       condition: << parameters.persist >>
