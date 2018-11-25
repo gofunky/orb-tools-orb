@@ -2,10 +2,13 @@ description: >
   A default test set that contains one success and one failing test case.
 
 steps:
-  - test:
-      test-config: << parameters.success-config >>
-      expect-fail: false
-      test-verification: << parameters.success-verification >>
+  - when:
+      condition: << parameters.success-config >>
+      steps:
+        - test:
+            test-config: << parameters.success-config >>
+            expect-fail: false
+            test-verification: << parameters.success-verification >>
   - when:
       condition: << parameters.fail-config >>
       steps:

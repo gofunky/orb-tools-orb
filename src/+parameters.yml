@@ -74,6 +74,7 @@ success-verification:
 success-config:
   description: the path to the succeeding test case config that refers to the orb jobs to be tested
   type: string
+  default: ""
 fail-verification:
   description: define additional post-test-execution checks to verify that the test failed
   type: steps
