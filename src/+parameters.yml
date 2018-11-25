@@ -22,6 +22,14 @@ orb-path:
   description: the path to the orb file
   type: string
 
+namespace:
+  description: >
+    The namespace of your target orb.
+    Environment variables from envorbs are accepted.
+    By default, the git organization is assumed.
+  type: string
+  default: ""
+
 orb-name:
   description: >
     The name of your target orb.

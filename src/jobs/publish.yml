@@ -21,13 +21,6 @@ parameters:
     description: If enabled, the destination-file will be persisted.
     type: boolean
     default: false
-  namespace:
-    description: >
-      The namespace of your target orb.
-      Environment variables from envorbs are accepted.
-      By default, the git organization is assumed.
-    type: string
-    default: ""
   version:
     description: >
       The publishing version of your orb.
