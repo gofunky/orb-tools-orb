@@ -50,7 +50,7 @@ steps:
             --env NO_PROXY \
             --env job \
             circleci/picard \
-            build --job $job | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success" || true
+            circleci build --job $job | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success" || true
         done
         docker container rm orbtools
   - << parameters.test-verification >>
