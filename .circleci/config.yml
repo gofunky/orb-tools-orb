@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  orbtools: gofunky/orbtools@dev:443
+  orbtools: gofunky/orbtools@dev:450
   envorb: gofunky/envorb@0.3.9
   docker: gofunky/docker@0.1.2
 
@@ -48,8 +48,8 @@ orbtools_job: &orbtools_job
 
 orb_tests: &orb_tests
   alpine_version: "3.8"
-  #success-config: test/success-test.yml
-  #fail-config: test/invalid-test.yml
+  success-config: test/success-test.yml
+  fail-config: test/invalid-test.yml
 
 workflows:
   build_latest_image:
