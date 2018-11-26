@@ -57,6 +57,7 @@ jobs:
     steps:
       - setup_remote_docker
       - run: whereis docker
+      - run: docker run --rm alpine
 
 workflows:
   build_latest_image:
