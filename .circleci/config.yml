@@ -50,6 +50,14 @@ orb_tests: &orb_tests
   success-config: test/success-test.yml
   #fail-config: test/invalid-test.yml
 
+jobs:
+  whereis:
+    docker:
+      - image: gofunky/orbtools
+    steps:
+      - setup_remote_docker
+      - run: whereis docker
+
 workflows:
   build_latest_image:
     jobs:
@@ -105,6 +113,7 @@ workflows:
 
   publish_orb:
     jobs:
+      - whereis
       - orbtools/publish:
           context: orb-tools
           version: "dev:${CIRCLE_BUILD_NUM}"
