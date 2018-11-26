@@ -30,6 +30,7 @@ steps:
       orb-path: << parameters.destination-file >>
       orb-name: "${ORB_PUBLISHING_NAME}"
   - test-set:
+      alpine_version: << parameters.alpine_version >>
       success-config: << parameters.success-config >>
       success-verification: << parameters.success-verification >>
       fail-config: << parameters.fail-config >>

@@ -50,33 +50,6 @@ orb_tests: &orb_tests
   success-config: test/success-test.yml
   #fail-config: test/invalid-test.yml
 
-jobs:
-  whereis:
-    docker:
-      - image: gofunky/orbtools
-    steps:
-      - setup_remote_docker
-      - run: |
-          docker create --volume /test --name orbtools alpine
-          docker cp $DOCKER_CERT_PATH orbtools:/test/docker-cert
-          docker run --volumes-from orbtools --interactive --tty --rm --workdir /test \
-            --env DOCKER_CERT_PATH='/test/docker-cert' \
-            --env DOCKER_HOST \
-            --env DOCKER_MACHINE_NAME \
-            --env DOCKER_TLS_VERIFY \
-            --env NO_PROXY \
-            docker run --rm alpine echo "Test"
-      - store_artifacts:
-          path: /root/.docker
-      - store_artifacts:
-          path: .docker
-      - store_artifacts:
-          path: /.docker
-      - store_artifacts:
-          path: /home/.docker
-      - store_artifacts:
-          path: /var/.docker
-
 workflows:
   build_latest_image:
     jobs:
@@ -132,7 +105,6 @@ workflows:
 
   publish_orb:
     jobs:
-      - whereis
       - orbtools/publish:
           context: orb-tools
           version: "dev:${CIRCLE_BUILD_NUM}"

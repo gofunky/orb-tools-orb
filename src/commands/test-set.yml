@@ -6,6 +6,7 @@ steps:
       condition: << parameters.success-config >>
       steps:
         - test:
+            alpine_version: << parameters.alpine_version >>
             test-config: << parameters.success-config >>
             expect-fail: false
             test-verification: << parameters.success-verification >>
@@ -13,6 +14,7 @@ steps:
       condition: << parameters.fail-config >>
       steps:
         - test:
+            alpine_version: << parameters.alpine_version >>
             test-config: << parameters.fail-config >>
             expect-fail: true
             test-verification: << parameters.fail-verification >>

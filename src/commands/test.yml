@@ -34,9 +34,24 @@ steps:
       name: run test jobs of << parameters.test-config >> locally
       command: |
         source /usr/local/bin/envload
+        docker create --volume /test --name orbtools alpine
+        docker cp $DOCKER_CERT_PATH orbtools:/test/docker-cert
+        docker cp ./.orbspace orbtools:/test
+        docker cp ./.circleci orbtools:/test
+        docker cp ./.orbspace/test-case.yml orbtools:/test/.circleci/config.yml
         for job in $ORB_TEST_JOBS; do
           echo "Executing test job '$job'"
           # TODO Remove true fallback
-          <<# parameters.expect-fail >>! <</ parameters.expect-fail>>circleci build --job $job --config ./.orbspace/test-case.yml | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success" || true
+          <<# parameters.expect-fail >>! <</ parameters.expect-fail>>docker run \
+            --volumes-from orbtools --interactive --tty --rm --workdir /test \
+            --env DOCKER_CERT_PATH='/test/docker-cert' \
+            --env DOCKER_HOST \
+            --env DOCKER_MACHINE_NAME \
+            --env DOCKER_TLS_VERIFY \
+            --env NO_PROXY \
+            --env job \
+            gofunky/orbtools:alpine<< parameters.alpine_version >> \
+            build --job $job | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success" || true
         done
+        docker container rm orbtools
   - << parameters.test-verification >>
