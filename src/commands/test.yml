@@ -41,14 +41,15 @@ steps:
       name: delete entries from the workflows
       command: |
         source /usr/local/bin/envload
-        for workflow in ORB_TEST_WORKFLOWS; do
+        for workflow in $ORB_TEST_WORKFLOWS; do
           yq d -v -i ./.orbspace/test-case.local.yml workflows.$wokflow
         done
         yq d -v -i ./.orbspace/test-case.local.yml jobs
   - run:
       name: patch jobs into the workflows
       command: |
-        for workflow in ORB_TEST_WORKFLOWS; do
+        source /usr/local/bin/envload
+        for workflow in $ORB_TEST_WORKFLOWS; do
           yq r -v ./.orbspace/test-case.yml workflows.$workflow.jobs \
             | grep -P "^\-" | grep -Po "[a-zA-Z][0-9a-zA-Z_\-\/]*" \
             | xargs -n1 -r -i \
