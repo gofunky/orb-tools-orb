@@ -2,8 +2,6 @@ description: Pack and validate the orb only.
 
 executor:
   name: default
-  alpine_version: << parameters.alpine_version >>
-
 
 steps:
   - checkout

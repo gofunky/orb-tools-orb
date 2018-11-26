@@ -65,7 +65,7 @@ workflows:
       - docker/build_test_push:
           name: build_latest
           <<: [*master_filter, *orbtools_job]
-          tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:${CLI_VERSION}-alpine${ALPINE_VERSION},gofunky/orbtools:alpine${ALPINE_VERSION},gofunky/orbtools:latest"
+          tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:latest"
           login: docker login -u $DOCKER_USR -p $DOCKER_PWD
           cache: true
           requires: [set_cli_version, set_alpine_version]
@@ -94,7 +94,7 @@ workflows:
       - docker/build_test_push:
           name: build_latest
           <<: [*master_filter, *orbtools_job]
-          tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:${CLI_VERSION}-alpine${ALPINE_VERSION},gofunky/orbtools:alpine${ALPINE_VERSION},gofunky/orbtools:latest,gofunky/orbtools:stable-alpine${ALPINE_VERSION},gofunky/orbtools:stable,gofunky/orbtools:daily"
+          tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:latest,gofunky/orbtools:stable,gofunky/orbtools:daily"
           login: docker login -u $DOCKER_USR -p $DOCKER_PWD
           cache: true
           requires: [set_cli_version, set_alpine_version]

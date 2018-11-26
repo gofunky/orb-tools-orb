@@ -1,7 +1,3 @@
-alpine_version:
-  description: the Alpine image version
-  type: string
-
 publish-token-variable:
   description: >
     the env var containing your publish token. Pass this as a literal string such

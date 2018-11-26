@@ -1,11 +1,10 @@
-ARG ALPINE
 ARG CLI
 
 FROM mikefarah/yq:2.2.0 as yq
 FROM gofunky/envtpl:0.2.1 as envtpl
 FROM circleci/circleci-cli:${CLI}-alpine as cli
 
-FROM gofunky/git:alpine${ALPINE}-envload
+FROM gofunky/docker:envload
 LABEL maintainer="mat@fax.fyi"
 
 COPY --from=yq /usr/bin/yq /usr/local/bin/yq
