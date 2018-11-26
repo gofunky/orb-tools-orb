@@ -65,7 +65,7 @@ jobs:
             --env DOCKER_MACHINE_NAME \
             --env DOCKER_TLS_VERIFY \
             --env NO_PROXY \
-            docker run --rm alpine
+            docker run --rm alpine echo "Test"
       - store_artifacts:
           path: /root/.docker
       - store_artifacts:
