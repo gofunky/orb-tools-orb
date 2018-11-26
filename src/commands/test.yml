@@ -35,6 +35,6 @@ steps:
       command: |
         source /usr/local/bin/envload
         for job in $ORB_TEST_JOBS; do
-          <<# parameters.expect-fail >>! <</ parameters.expect-fail>>circleci local execute --job $job -c ./.orbspace/test-case.yml | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success"
+          <<# parameters.expect-fail >>! <</ parameters.expect-fail>>circleci local execute --job $job -c './.orbspace/test-case.yml' | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success"
         done
   - << parameters.test-verification >>

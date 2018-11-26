@@ -108,7 +108,7 @@ workflows:
       - orbtools/publish:
           context: orb-tools
           version: "dev:${CIRCLE_BUILD_NUM}"
-          <<: [*master_filter, *use_alpine_version, *orb_tests]
+          <<: [*master_filter, *use_alpine_version]
 
   release_orb:
     jobs:
