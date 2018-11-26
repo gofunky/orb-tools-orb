@@ -59,13 +59,12 @@ jobs:
       - run: |
           docker create --volume /test --name orbtools alpine
           docker cp $DOCKER_CERT_PATH orbtools:/test/docker-cert
-          docker run --volumes-from orbtools --interactive --tty --rm docker \
+          docker run --volumes-from orbtools --interactive --tty --rm --workdir /test \
             --env DOCKER_CERT_PATH='/test/docker-cert' \
-            --env DOCKER_HOST="$DOCKER_HOST" \
-            --env DOCKER_MACHINE_NAME="$DOCKER_MACHINE_NAME" \
-            --env DOCKER_TLS_VERIFY="$DOCKER_TLS_VERIFY" \
-            --env NO_PROXY="$NO_PROXY" \
-            --workdir /test \
+            --env DOCKER_HOST \
+            --env DOCKER_MACHINE_NAME \
+            --env DOCKER_TLS_VERIFY \
+            --env NO_PROXY \
             docker run --rm alpine
       - store_artifacts:
           path: /root/.docker
