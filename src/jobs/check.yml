@@ -6,7 +6,6 @@ executor:
 
 steps:
   - checkout
-  - setup_remote_docker
   - when:
       condition: << parameters.patch-parameters >>
       steps:
