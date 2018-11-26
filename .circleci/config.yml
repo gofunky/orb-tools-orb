@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  orbtools: gofunky/orbtools@dev:492
+  orbtools: gofunky/orbtools@dev:450
   envorb: gofunky/envorb@0.3.9
   docker: gofunky/docker@0.1.2
 
@@ -27,6 +27,12 @@ pr_filter: &pr_filter
 use_alpine_version: &use_alpine_version
   alpine_version: "3.8"
 
+set_alpine_version: &set_alpine_version
+  <<: *use_alpine_version
+  attach: true
+  variable: ALPINE_VERSION
+  value: "3.8"
+
 set_cli_version: &set_cli_version
   <<: *use_alpine_version
   variable: CLI_VERSION
@@ -38,11 +44,12 @@ orbtools_job: &orbtools_job
   add_labels: true
   docker_version: 18.09.0
   context: docker-hub
-  args: "VERSION=${CLI_VERSION},CLI=${CLI_VERSION}"
+  args: "VERSION=${CLI_VERSION},ALPINE=${ALPINE_VERSION},CLI=${CLI_VERSION}"
 
 orb_tests: &orb_tests
-  success-config: test/success-test.yml
-  fail-config: test/invalid-test.yml
+  alpine_version: "3.8"
+  #success-config: test/success-test.yml
+  #fail-config: test/invalid-test.yml
 
 workflows:
   build_latest_image:
@@ -51,19 +58,23 @@ workflows:
           name: set_cli_version
           <<: *set_cli_version
 
+      - envorb/value:
+          name: set_alpine_version
+          <<: *set_alpine_version
+
       - docker/build_test_push:
           name: build_latest
           <<: [*master_filter, *orbtools_job]
           tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:latest"
           login: docker login -u $DOCKER_USR -p $DOCKER_PWD
           cache: true
-          requires: [set_cli_version]
+          requires: [set_cli_version, set_alpine_version]
 
       - docker/build_test:
           name: test_latest
           <<: [*pr_filter, *orbtools_job]
           tags: "gofunky/orbtools:latest"
-          requires: [set_cli_version]
+          requires: [set_cli_version, set_alpine_version]
 
   build_daily_image:
     triggers:
@@ -76,34 +87,39 @@ workflows:
           name: set_cli_version
           <<: *set_cli_version
 
+      - envorb/value:
+          name: set_alpine_version
+          <<: *set_alpine_version
+
       - docker/build_test_push:
           name: build_latest
           <<: [*master_filter, *orbtools_job]
           tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:latest,gofunky/orbtools:stable,gofunky/orbtools:daily"
           login: docker login -u $DOCKER_USR -p $DOCKER_PWD
           cache: true
-          requires: [set_cli_version]
+          requires: [set_cli_version, set_alpine_version]
 
   check_orb:
     jobs:
       - orbtools/check:
-          <<: [*pr_filter]
+          <<: [*pr_filter, *use_alpine_version, *orb_tests]
 
   publish_orb:
     jobs:
       - orbtools/publish:
           context: orb-tools
           version: "dev:${CIRCLE_BUILD_NUM}"
-          <<: [*master_filter]
+          <<: [*master_filter, *use_alpine_version, *orb_tests]
 
   release_orb:
     jobs:
       - envorb/git_tag:
           name: release_tag
+          alpine_version: "3.8"
           variable: ORB_PUBLISHING_VERSION
           <<: [*tag_filter, *use_alpine_version]
 
       - orbtools/publish:
           context: orb-tools
-          <<: [*tag_filter]
+          <<: [*tag_filter, *use_alpine_version, *orb_tests]
           requires: [release_tag]

@@ -1,2 +1,2 @@
 docker:
-  - image: gofunky/orbtools
+  - image: gofunky/orbtools:alpine<< parameters.alpine_version >>

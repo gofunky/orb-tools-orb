@@ -33,6 +33,7 @@ parameters:
 
 executor:
   name: default
+  alpine_version: << parameters.alpine_version >>
 
 steps:
   - when:

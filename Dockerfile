@@ -1,10 +1,11 @@
+ARG ALPINE
 ARG CLI
 
 FROM mikefarah/yq:2.2.0 as yq
 FROM gofunky/envtpl:0.2.1 as envtpl
 FROM circleci/circleci-cli:${CLI}-alpine as cli
 
-FROM gofunky/docker:envload
+FROM gofunky/git:alpine${ALPINE}-envload
 LABEL maintainer="mat@fax.fyi"
 
 COPY --from=yq /usr/bin/yq /usr/local/bin/yq
@@ -15,6 +16,8 @@ RUN chmod +x /usr/local/bin/envtpl
 
 COPY --from=cli /usr/local/bin/circleci /usr/local/bin/circleci
 RUN chmod +x /usr/local/bin/circleci
+
+RUN apk add --no-cache docker
 
 ARG VERSION
 ARG BUILD_DATE
