@@ -37,8 +37,7 @@ steps:
         docker create --volume /test --name orbtools alpine
         docker cp $DOCKER_CERT_PATH orbtools:/test/docker-cert
         docker cp ./.orbspace orbtools:/test
-        docker cp ./.circleci orbtools:/test
-        docker cp ./.orbspace/test-case.yml orbtools:/test/.circleci/config.yml
+        docker cp ./.orbspace/test-case.yml orbtools:/test/circle.yml
         for job in $ORB_TEST_JOBS; do
           echo "Executing test job '$job'"
           # TODO Remove true fallback
