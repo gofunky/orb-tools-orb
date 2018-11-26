@@ -27,12 +27,6 @@ pr_filter: &pr_filter
 use_alpine_version: &use_alpine_version
   alpine_version: "3.8"
 
-set_alpine_version: &set_alpine_version
-  <<: *use_alpine_version
-  attach: true
-  variable: ALPINE_VERSION
-  value: "3.8"
-
 set_cli_version: &set_cli_version
   <<: *use_alpine_version
   variable: CLI_VERSION
@@ -44,7 +38,7 @@ orbtools_job: &orbtools_job
   add_labels: true
   docker_version: 18.09.0
   context: docker-hub
-  args: "VERSION=${CLI_VERSION},ALPINE=${ALPINE_VERSION},CLI=${CLI_VERSION}"
+  args: "VERSION=${CLI_VERSION},CLI=${CLI_VERSION}"
 
 orb_tests: &orb_tests
   alpine_version: "3.8"
@@ -58,23 +52,19 @@ workflows:
           name: set_cli_version
           <<: *set_cli_version
 
-      - envorb/value:
-          name: set_alpine_version
-          <<: *set_alpine_version
-
       - docker/build_test_push:
           name: build_latest
           <<: [*master_filter, *orbtools_job]
           tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:latest"
           login: docker login -u $DOCKER_USR -p $DOCKER_PWD
           cache: true
-          requires: [set_cli_version, set_alpine_version]
+          requires: [set_cli_version]
 
       - docker/build_test:
           name: test_latest
           <<: [*pr_filter, *orbtools_job]
           tags: "gofunky/orbtools:latest"
-          requires: [set_cli_version, set_alpine_version]
+          requires: [set_cli_version]
 
   build_daily_image:
     triggers:
@@ -87,17 +77,13 @@ workflows:
           name: set_cli_version
           <<: *set_cli_version
 
-      - envorb/value:
-          name: set_alpine_version
-          <<: *set_alpine_version
-
       - docker/build_test_push:
           name: build_latest
           <<: [*master_filter, *orbtools_job]
           tags: "gofunky/orbtools:${CLI_VERSION},gofunky/orbtools:latest,gofunky/orbtools:stable,gofunky/orbtools:daily"
           login: docker login -u $DOCKER_USR -p $DOCKER_PWD
           cache: true
-          requires: [set_cli_version, set_alpine_version]
+          requires: [set_cli_version]
 
   check_orb:
     jobs:
