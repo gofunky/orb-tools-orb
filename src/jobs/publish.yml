@@ -40,6 +40,7 @@ steps:
       condition: << parameters.checkout >>
       steps:
         - checkout
+  - setup_remote_docker
   - attach_workspace:
       at: << parameters.attach-at >>
   - when:
