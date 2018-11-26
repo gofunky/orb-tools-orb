@@ -7,7 +7,7 @@ FROM circleci/circleci-cli:${CLI}-alpine as cli
 FROM gofunky/docker:envload
 LABEL maintainer="mat@fax.fyi"
 
-ENV  IFS " "
+RUN unset IFS
 
 COPY --from=yq /usr/bin/yq /usr/local/bin/yq
 RUN chmod +x /usr/local/bin/yq
