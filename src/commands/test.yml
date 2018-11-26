@@ -26,6 +26,10 @@ steps:
   - run:
       name: compile test config << parameters.test-config >>
       command: circleci config process ./.orbspace/test-case.src.yml > ./.orbspace/test-case.yml
+  - read-root-elements:
+      variable: ORB_TEST_JOBS
+      template-path: ./.orbspace/test-case.yml
+      child: jobs
   - run:
       name: run test jobs of << parameters.test-config >> locally
       command: |
