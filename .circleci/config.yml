@@ -53,11 +53,13 @@ orb_tests: &orb_tests
 jobs:
   whereis:
     docker:
-      - image: ubuntu:latest
+      - image: gofunky/orbtools
     steps:
       - setup_remote_docker
       - run: whereis docker
       - run: docker run --rm alpine
+      - store_artifacts:
+          path: /root/.docker
 
 workflows:
   build_latest_image:
