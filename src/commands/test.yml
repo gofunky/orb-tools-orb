@@ -50,7 +50,9 @@ steps:
             --env NO_PROXY \
             --env job \
             circleci/picard \
-            circleci build --job $job | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success" || true
+            sh -vc "docker version && \
+            docker run --rm alpine echo test && \
+            circleci build --job $job" | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success" || true
         done
         docker container rm orbtools
   - << parameters.test-verification >>
