@@ -17,6 +17,8 @@ RUN chmod +x /usr/local/bin/envtpl
 COPY --from=cli /usr/local/bin/circleci /usr/local/bin/circleci
 RUN chmod +x /usr/local/bin/circleci
 
+RUN apk add --no-cache docker
+
 ARG VERSION
 ARG BUILD_DATE
 ARG VCS_REF
