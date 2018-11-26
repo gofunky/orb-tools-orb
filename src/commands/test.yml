@@ -27,14 +27,46 @@ steps:
       name: compile test config << parameters.test-config >>
       command: circleci config process ./.orbspace/test-case.src.yml > ./.orbspace/test-case.yml
   - read-root-elements:
+      variable: ORB_TEST_WORKFLOWS
+      template-path: ./.orbspace/test-case.yml
+      child: workflows
+  - read-root-elements:
       variable: ORB_TEST_JOBS
       template-path: ./.orbspace/test-case.yml
       child: jobs
+  - run:
+      name: create target file for the local execution migration
+      command: cp ./.orbspace/test-case.yml ./.orbspace/test-case.local.yml
+  - run:
+      name: delete entries from the workflows
+      command: |
+        source /usr/local/bin/envload
+        for workflow in ORB_TEST_WORKFLOWS; do
+          yq d -v -i ./.orbspace/test-case.local.yml workflows.$wokflow
+        done
+        yq d -v -i ./.orbspace/test-case.local.yml jobs
+  - run:
+      name: patch jobs into the workflows
+      command: |
+        for workflow in ORB_TEST_WORKFLOWS; do
+          yq r -v ./.orbspace/test-case.yml workflows.$workflow.jobs \
+            | grep -P "^\-" | grep -Po "[a-zA-Z][0-9a-zA-Z_\-\/]*" \
+            | xargs -n1 -r -i \
+              sh -vc " \
+                echo \"Patching $workflow/{}\" && \
+                yq r -v ./.orbspace/test-case.yml jobs.{}.steps > ./.orbspace/test-steps.tmp && \
+                yq p -v -i ./.orbspace/test-steps.tmp jobs.$workflow.steps && \
+                yq m -v -i -a ./.orbspace/test-case.local.yml ./.orbspace/test-steps.tmp \
+            " || true
+        done
+        rm -vf ./.orbspace/test-steps.tmp
   - run:
       name: run test jobs of << parameters.test-config >> locally
       command: |
         source /usr/local/bin/envload
         for job in $ORB_TEST_JOBS; do
-          <<# parameters.expect-fail >>! <</ parameters.expect-fail>>circleci local execute --job $job -c './.orbspace/test-case.yml' | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success"
+          echo "Executing test job '$job'"
+          echo "WARNING: Tests are not yet implemented - SKIPPING"
+          # <<# parameters.expect-fail >>! <</ parameters.expect-fail>>circleci local execute --job $job --config ./.orbspace/test-case.local.yml | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success"
         done
   - << parameters.test-verification >>
