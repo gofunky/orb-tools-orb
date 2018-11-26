@@ -87,14 +87,14 @@ workflows:
   check_orb:
     jobs:
       - orbtools/check:
-          <<: [*pr_filter]
+          <<: [*pr_filter, *use_alpine_version]
 
   publish_orb:
     jobs:
       - orbtools/publish:
           context: orb-tools
           version: "dev:${CIRCLE_BUILD_NUM}"
-          <<: [*master_filter]
+          <<: [*master_filter, *use_alpine_version]
 
   release_orb:
     jobs:
@@ -105,5 +105,5 @@ workflows:
 
       - orbtools/publish:
           context: orb-tools
-          <<: [*tag_filter]
+          <<: [*tag_filter, *use_alpine_version]
           requires: [release_tag]
