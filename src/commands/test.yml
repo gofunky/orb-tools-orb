@@ -29,5 +29,5 @@ steps:
   - run:
       name: run test jobs of << parameters.test-config >> locally
       command: |
-        <<# parameters.expect-fail >>! <</ parameters.expect-fail>>circleci local execute -c ./.orbspace/test-case.src.yml | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success"
+        <<# parameters.expect-fail >>! <</ parameters.expect-fail>>circleci local execute -c ./.orbspace/test-case.yml | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success"
   - << parameters.test-verification >>
