@@ -49,7 +49,7 @@ steps:
             --env DOCKER_TLS_VERIFY \
             --env NO_PROXY \
             --env job \
-            gofunky/orbtools:alpine<< parameters.alpine_version >> \
+            circleci/picard \
             build --job $job | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success" || true
         done
         docker container rm orbtools
