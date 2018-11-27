@@ -1,0 +1,14 @@
+version: 2.1
+
+description: >
+  A simple invalid example orb that defines an invalid schema.
+
+executors:
+  default:
+    docker:
+      - image: alpine
+
+jobs:
+  foo:
+    invalid:
+      schema: here

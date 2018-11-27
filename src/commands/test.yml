@@ -1,0 +1,57 @@
+description: >
+  Pack a test configuration and execute a test job locally.
+
+parameters:
+  test-verification:
+    description: define additional post-test-execution checks to verify that the test succeeded
+    type: steps
+    default: []
+  test-config:
+    description: the path to the test case config that refers to the orb jobs to be tested
+    type: string
+  expect-fail:
+    description: enable if this test case is expected to fail, otherwise let it disabled to the default
+    type: boolean
+    default: false
+
+steps:
+  - run:
+      name: copy test source of << parameters.test-config >>
+      command: |
+        source /usr/local/bin/envload
+        cp << parameters.test-config >> ./.orbspace/test/config.yml
+  - orb-tools/pack:
+      source: ./.orbspace/test
+      destination: ./.orbspace/test-case.src.yml
+  - run:
+      name: compile test config << parameters.test-config >>
+      command: circleci config process ./.orbspace/test-case.src.yml > ./.orbspace/test-case.yml
+  - read-root-elements:
+      variable: ORB_TEST_JOBS
+      template-path: ./.orbspace/test-case.yml
+      child: jobs
+  - run:
+      name: run test jobs of << parameters.test-config >> locally
+      command: |
+        source /usr/local/bin/envload
+        docker create --volume /test --name orbtools alpine
+        docker cp $DOCKER_CERT_PATH orbtools:/test/docker-cert
+        docker cp ./.orbspace orbtools:/test
+        docker cp ./.orbspace/test-case.yml orbtools:/test/circle.yml
+        for job in $ORB_TEST_JOBS; do
+          echo "Executing test job '$job'"
+          # TODO Remove true fallback
+          <<# parameters.expect-fail >>! <</ parameters.expect-fail>>docker run \
+            --volumes-from orbtools --interactive --tty --rm --workdir /test \
+            --env DOCKER_CERT_PATH='/test/docker-cert' \
+            --env DOCKER_HOST \
+            --env DOCKER_MACHINE_NAME \
+            --env DOCKER_TLS_VERIFY \
+            --env NO_PROXY \
+            --env job \
+            circleci/picard \
+            circleci execute --verbose --job $job \
+            | tee local_build_output.txt /dev/stderr | tail -n 1 | grep "Success" || true
+        done
+        docker container rm orbtools
+  - << parameters.test-verification >>

@@ -1,0 +1,8 @@
+version: 2.1
+
+workflows:
+  check:
+    jobs:
+      - orbtools/check:
+          alpine_version: "3.8"
+          source-dir: test/success-orb/

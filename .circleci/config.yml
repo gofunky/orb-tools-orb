@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  orbtools: gofunky/orbtools@dev:198
+  orbtools: gofunky/orbtools@dev:691
   envorb: gofunky/envorb@0.3.9
   docker: gofunky/docker@0.1.2
 
@@ -45,6 +45,10 @@ orbtools_job: &orbtools_job
   docker_version: 18.09.0
   context: docker-hub
   args: "VERSION=${CLI_VERSION},ALPINE=${ALPINE_VERSION},CLI=${CLI_VERSION}"
+
+orb_tests: &orb_tests
+  success-config: test/success-test.yml
+  #fail-config: test/invalid-test.yml
 
 workflows:
   build_latest_image:
@@ -97,16 +101,14 @@ workflows:
   check_orb:
     jobs:
       - orbtools/check:
-          name: check_pull_request
-          <<: [*pr_filter, *use_alpine_version]
+          <<: [*pr_filter, *use_alpine_version, *orb_tests]
 
   publish_orb:
     jobs:
-      - orbtools/env-pack-publish:
-          name: publish_latest
+      - orbtools/publish:
           context: orb-tools
           version: "dev:${CIRCLE_BUILD_NUM}"
-          <<: [*master_filter, *use_alpine_version]
+          <<: [*master_filter, *use_alpine_version, *orb_tests]
 
   release_orb:
     jobs:
@@ -116,8 +118,7 @@ workflows:
           variable: ORB_PUBLISHING_VERSION
           <<: [*tag_filter, *use_alpine_version]
 
-      - orbtools/env-pack-publish:
-          name: publish_release
+      - orbtools/publish:
           context: orb-tools
-          <<: [*tag_filter, *use_alpine_version]
+          <<: [*tag_filter, *use_alpine_version, *orb_tests]
           requires: [release_tag]

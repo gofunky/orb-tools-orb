@@ -1,0 +1,42 @@
+description: Pack and validate the orb only.
+
+executor:
+  name: default
+  alpine_version: << parameters.alpine_version >>
+
+steps:
+  - checkout
+  - setup_remote_docker
+  - when:
+      condition: << parameters.patch-parameters >>
+      steps:
+        - merge-parameters
+  - orb-tools/pack:
+      source: << parameters.source-dir >>
+      destination: << parameters.destination-file >>
+  - set-namespace:
+      namespace: << parameters.namespace >>
+  - set-name:
+      orb-name: << parameters.orb-name >>
+  - when:
+      condition: << parameters.patch-environment-variables >>
+      steps:
+        - env-templater:
+            orb-path: << parameters.destination-file >>
+            target-path: << parameters.destination-file >>
+  - orb-tools/validate:
+      orb-path: << parameters.destination-file >>
+  - prepare-test:
+      orb-path: << parameters.destination-file >>
+      orb-name: "${ORB_PUBLISHING_NAME}"
+  - test-set:
+      success-config: << parameters.success-config >>
+      success-verification: << parameters.success-verification >>
+      fail-config: << parameters.fail-config >>
+      fail-verification: << parameters.fail-verification >>
+  - << parameters.test-steps >>
+  - when:
+      condition: << parameters.store-artifact >>
+      steps:
+        - store_artifacts:
+            path: .orbspace

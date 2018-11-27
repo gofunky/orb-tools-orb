@@ -1,0 +1,29 @@
+description: >
+  Patches all crosscutting parameters defined in the src/+parameters.yml file.
+  First, parameter names are read from the +parameters.yml file.
+  Then, for each parameter it is checked which job, command, or executor requires the parameter.
+  If the parameter is referenced via << parameters.xyz >>, the parameter definition is patched.
+steps:
+  - read-root-elements:
+      variable: ORB_PARAMETERS
+      template-path: "src/+parameters.yml"
+  - run:
+      name: Check and merge the given parameters
+      command: |
+        source /usr/local/bin/envload
+        mkdir -pv ./.orbspace/parameters
+        for param in $ORB_PARAMETERS; do
+          echo "Checking '$param'..."
+          grep -rs src/commands/* src/jobs/* src/executors/* -le "\<<\sparameters\.$param\s>>" \
+            --exclude src/+parameters.yml \
+            | xargs -n1 -r -i \
+              sh -vc " \
+                echo \"Parameter was found in '{}'\" && \
+                yq r -v src/+parameters.yml $param > ./.orbspace/parameters/$param.yml && \
+                yq p -v -i ./.orbspace/parameters/$param.yml parameters.$param && \
+                mv {} {}.old && \
+                yq m -v -x {}.old ./.orbspace/parameters/$param.yml >> {} && \
+                rm -fv {}.old \
+              " || true
+        done
+        rm -fv src/+parameters.yml

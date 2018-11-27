@@ -1,0 +1,90 @@
+alpine_version:
+  description: the Alpine image version
+  type: string
+
+publish-token-variable:
+  description: >
+    the env var containing your publish token. Pass this as a literal string such
+    as `$ORB_PUBLISHING_TOKEN`. DO NOT paste the actual token into your
+    configuration. If omitted it's assumed the CLI has already been setup
+    with a valid token.
+    By default, an environment variable `$ORB_PUBLISHING_TOKEN` is expected.
+    Make sure to pass a context to this job that contains the variable.
+  type: string
+  default: "${ORB_PUBLISHING_TOKEN}"
+
+destination-file:
+  description: Path including filename of where the packed orb will be written.
+  type: string
+  default: ./.orbspace/orb.yml
+
+orb-path:
+  description: the path to the orb file
+  type: string
+
+namespace:
+  description: >
+    The namespace of your target orb.
+    Environment variables from envorbs are accepted.
+    By default, the git organization is assumed.
+  type: string
+  default: ""
+
+orb-name:
+  description: >
+    The name of your target orb.
+    Environment variables from envorbs are accepted.
+    By default, the git repository name is assumed.
+  type: string
+  default: ""
+
+source-dir:
+  description: >
+    Path to the root of the orb source directory to be packed.
+    By default, `src/` is assumed.
+  type: string
+  default: src/
+
+store-artifact:
+  description: If enabled, the destination-file will be stored as artifact.
+  type: boolean
+  default: true
+
+patch-environment-variables:
+  description: >
+    To replace all template variables with the respective environment variables.
+    Variables have to be defined in the format `{{"{{"}}.VAR{{"}}"}}`.
+  type: boolean
+  default: true
+
+patch-parameters:
+  description: >
+    To patch all crosscutting parameters defined in the src/+parameters.yml file.
+    Parameters that are shared among multiple commands, orbs or executors can thereby be shared.
+    Define the parameters in the root layer of the +parameters.yml file.
+    In every yaml file inside the commands, jobs, or executors folder, the parameters are propagated if they
+    are referenced there via << parameters.xyz >>.
+  type: boolean
+  default: true
+
+success-verification:
+  description: define additional post-test-execution checks to verify that the test succeeded
+  type: steps
+  default: []
+success-config:
+  description: the path to the succeeding test case config that refers to the orb jobs to be tested
+  type: string
+  default: ""
+fail-verification:
+  description: define additional post-test-execution checks to verify that the test failed
+  type: steps
+  default: []
+fail-config:
+  description: the path to the failing test case config that refers to the orb jobs to be tested
+  type: string
+  default: ""
+
+test-steps:
+  description: if you need more than 2 test cases, you can define your own test sequence here using the test command
+  type: steps
+  default: []

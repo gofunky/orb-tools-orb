@@ -1,0 +1,16 @@
+description: >
+  Check if the orb namespace is defined and set the environment variable `ORB_PUBLISHING_NAMESPACE`.
+  If the orb namespace is not defined, fall back and derive the namespace from the git repository.
+
+steps:
+  - when:
+      condition: << parameters.namespace >>
+      steps:
+        - envorb/value:
+            variable: ORB_PUBLISHING_NAMESPACE
+            value: << parameters.namespace >>
+  - unless:
+      condition: << parameters.namespace >>
+      steps:
+        - envorb/git_org:
+            variable: ORB_PUBLISHING_NAMESPACE
