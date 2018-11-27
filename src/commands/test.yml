@@ -42,7 +42,7 @@ steps:
           echo "Executing test job '$job'"
           # TODO Remove true fallback
           <<# parameters.expect-fail >>! <</ parameters.expect-fail>>docker run \
-            --volumes-from orbtools --interactive --tty --rm --workdir /test \
+            --volumes-from orbtools --network host --interactive --tty --rm --workdir /test \
             --env DOCKER_CERT_PATH='/test/docker-cert' \
             --env DOCKER_HOST="$DOCKER_HOST" \
             --env DOCKER_MACHINE_NAME="$DOCKER_MACHINE_NAME" \
