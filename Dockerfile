@@ -1,7 +1,7 @@
 ARG ALPINE
 ARG CLI
 
-FROM mikefarah/yq:2.2.0 as yq
+FROM mikefarah/yq:3.3.0 as yq
 FROM gofunky/envtpl:0.2.1 as envtpl
 FROM circleci/circleci-cli:${CLI}-alpine as cli
 
